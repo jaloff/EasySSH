@@ -1,7 +1,9 @@
 package jalov.easyssh;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -25,10 +27,14 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
     private Optional<ProcessInfo> sshdProcessInfo;
     private FloatingActionButton fab;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -38,6 +44,11 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(v -> toggleSSH());
 
         updateSshdProcessInfo();
+
+        boolean runOnStart = sharedPreferences.getBoolean(getResources().getString(R.string.run_on_app_start_key), false);
+        if(runOnStart && !sshdProcessInfo.isPresent()) {
+            toggleSSH();
+        }
     }
 
     @Override

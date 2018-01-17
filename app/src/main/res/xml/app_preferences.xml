@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory
-        android:title="SSHD Config">
+    <PreferenceCategory android:title="App Settings">
 
-            <EditTextPreference
-                android:title="Port"
-                android:key="@string/p_port"
-                android:defaultValue="22"
-                />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/run_on_app_start_key"
+            android:title="@string/run_on_app_start_text" />
 
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="SSHD Config">
+
+        <EditTextPreference
+            android:defaultValue="22"
+            android:key="@string/p_port"
+            android:title="@string/port_text" />
 
     </PreferenceCategory>
 
