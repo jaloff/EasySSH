@@ -18,6 +18,10 @@
             android:defaultValue="22"
             android:key="@string/p_port"
             android:title="@string/port_text" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/sftp_key"
+            android:title="@string/sftp_text" />
 
     </PreferenceCategory>
 

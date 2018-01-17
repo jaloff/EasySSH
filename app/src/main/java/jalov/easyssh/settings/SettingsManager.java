@@ -66,8 +66,20 @@ public class SettingsManager {
     }
 
     public void updateConfig(String key, String value) {
-        if(settings.get(key).compareTo(value) != 0) {
-            settings.replace(key, value);
+        if(settings.containsKey(key)) {
+            if (settings.get(key).compareTo(value) != 0) {
+                settings.replace(key, value);
+                saveSshdConfig();
+            }
+        } else {
+            settings.put(key, value);
+            saveSshdConfig();
+        }
+    }
+
+    public void removeFromConfig(String key) {
+        if(settings.containsKey(key)) {
+            settings.remove(key);
             saveSshdConfig();
         }
     }

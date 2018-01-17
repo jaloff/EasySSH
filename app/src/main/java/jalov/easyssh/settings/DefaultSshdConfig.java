@@ -17,7 +17,6 @@ enum DefaultSshdConfig {
         config.put("AuthorizedKeysFile", "/data/ssh/authorized_keys");
         config.put("PasswordAuthentication", "no");
         config.put("PidFile", "/data/ssh/sshd.pid");
-        config.put("Subsystem", "sftp internal-sftp");
     }
 
     public Map<String,String> getConfig() {

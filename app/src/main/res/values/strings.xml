@@ -5,4 +5,6 @@
     <string name="port_text">Port</string>
     <string name="run_on_app_start_text">Run SSH on App Start</string>
     <string name="run_on_app_start_key">run_on_app_start</string>
+    <string name="sftp_text">Enable SFTP</string>
+    <string name="sftp_key">sftp</string>
 </resources>
