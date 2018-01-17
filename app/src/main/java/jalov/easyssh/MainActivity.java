@@ -1,5 +1,6 @@
 package jalov.easyssh;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Optional;
 
+import jalov.easyssh.settings.SettingsActivity;
+
 import static jalov.easyssh.RootManager.su;
 
 public class MainActivity extends AppCompatActivity {
@@ -27,10 +30,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = findViewById(R.id.fab);
         fab.setOnClickListener(v -> toggleSSH());
 
         updateSshdProcessInfo();
@@ -52,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivityForResult(intent, 0);
             return true;
         }
 
@@ -69,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void updateSshdProcessInfo() {
-        TextView tv = (TextView) findViewById(R.id.tv_status);
+        TextView tv = findViewById(R.id.tv_status);
         sshdProcessInfo = getSshdProcessesInfo();
         String status = "Stopped";
         if(sshdProcessInfo.isPresent()) {
