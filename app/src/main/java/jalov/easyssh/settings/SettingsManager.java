@@ -13,12 +13,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.inject.Singleton;
+
 import jalov.easyssh.RootManager;
 
 /**
  * Created by jalov on 2018-01-16.
  */
 
+@Singleton
 public class SettingsManager {
     public static final String TAG = "SettingsManager";
     public static final String SSHD_CONFIG_PATH = "/system/etc/ssh/sshd_config";
@@ -63,6 +66,10 @@ public class SettingsManager {
             addMissingConfiguration(settings);
             saveSshdConfig();
         }
+    }
+
+    public String getSetting(String key) {
+        return settings.get(key);
     }
 
     public void updateConfig(String key, String value) {

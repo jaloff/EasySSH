@@ -1,26 +1,30 @@
 package jalov.easyssh.settings;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
-import android.preference.SwitchPreference;
-import android.support.annotation.Nullable;
+import android.support.v14.preference.SwitchPreference;
+import android.support.v7.preference.EditTextPreference;
+import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.PreferenceManager;
 
+import javax.inject.Inject;
+
+import dagger.android.support.AndroidSupportInjection;
 import jalov.easyssh.R;
+
 
 /**
  * Created by jalov on 2018-01-16.
  */
 
-public class SettingsFragment extends PreferenceFragment {
+public class SettingsFragment extends PreferenceFragmentCompat {
     private SharedPreferences sharedPreferences;
-    private SettingsManager settingsManager;
+    @Inject
+    SettingsManager settingsManager;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         settingsManager = new SettingsManager();
         addPreferencesFromResource(R.xml.app_preferences);
@@ -47,5 +51,11 @@ public class SettingsFragment extends PreferenceFragment {
             }
             return true;
         });
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        AndroidSupportInjection.inject(this);
+        super.onAttach(context);
     }
 }

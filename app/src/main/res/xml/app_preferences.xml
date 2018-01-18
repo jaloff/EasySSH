@@ -3,17 +3,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory android:title="App Settings">
-
         <SwitchPreference
             android:defaultValue="false"
             android:key="@string/run_on_app_start_key"
             android:title="@string/run_on_app_start_text" />
-
-
     </PreferenceCategory>
 
     <PreferenceCategory android:title="SSHD Config">
-
         <EditTextPreference
             android:defaultValue="22"
             android:key="@string/p_port"
@@ -22,7 +18,6 @@
             android:defaultValue="false"
             android:key="@string/sftp_key"
             android:title="@string/sftp_text" />
-
     </PreferenceCategory>
 
 </PreferenceScreen>
