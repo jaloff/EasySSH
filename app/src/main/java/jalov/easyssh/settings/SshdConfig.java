@@ -22,7 +22,7 @@ import jalov.easyssh.RootManager;
  */
 
 @Singleton
-public class SettingsManager {
+public class SshdConfig {
     public static final String TAG = "SettingsManager";
     public static final String SSHD_CONFIG_PATH = "/system/etc/ssh/sshd_config";
     public static final String RSA_HOSTKEY_PATH = "/data/ssh/ssh_host_rsa_key";
@@ -32,11 +32,11 @@ public class SettingsManager {
     private Map<String,String> settings;
     private List<String> hostKeys;
 
-    public SettingsManager() {
-        loadSshdConfig();
+    public SshdConfig() {
+        load();
     }
 
-    public void loadSshdConfig() {
+    public void load() {
         settings = new HashMap<>();
         hostKeys = new ArrayList<>();
         File sshdConfigFile = new File(SSHD_CONFIG_PATH);
@@ -54,7 +54,7 @@ public class SettingsManager {
                         }) // Store HostKeys separately
                         .collect(Collectors.toMap(a -> a[0], a -> Arrays.stream(a).skip(1L).collect(Collectors.joining(" "))));
 
-                settings.entrySet().stream().forEach(es -> Log.d(TAG, "loadSshdConfig: " + es.getKey() + "=" + es.getValue()));
+                settings.entrySet().stream().forEach(es -> Log.d(TAG, "load: " + es.getKey() + "=" + es.getValue()));
                 addMissingConfiguration(settings);
 
             } catch (IOException e) {
@@ -64,34 +64,34 @@ public class SettingsManager {
             // Create new config file
             Log.d(TAG, "Saving new file");
             addMissingConfiguration(settings);
-            saveSshdConfig();
+            save();
         }
     }
 
-    public String getSetting(String key) {
+    public String get(String key) {
         return settings.get(key);
     }
 
-    public void updateConfig(String key, String value) {
+    public void addOrUpdate(String key, String value) {
         if(settings.containsKey(key)) {
             if (settings.get(key).compareTo(value) != 0) {
                 settings.replace(key, value);
-                saveSshdConfig();
+                save();
             }
         } else {
             settings.put(key, value);
-            saveSshdConfig();
+            save();
         }
     }
 
-    public void removeFromConfig(String key) {
+    public void remove(String key) {
         if(settings.containsKey(key)) {
             settings.remove(key);
-            saveSshdConfig();
+            save();
         }
     }
 
-    private void saveSshdConfig() {
+    private void save() {
         StringBuilder fileContent = new StringBuilder();
         hostKeys.stream().forEach(hk -> fileContent.append("HostKey " + hk + "\n"));
         settings.entrySet().stream().forEach(es -> fileContent.append(es.getKey() + " " + es.getValue() + "\n"));

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v14.preference.SwitchPreference;
 import android.support.v7.preference.EditTextPreference;
 import android.support.v7.preference.PreferenceFragmentCompat;
-import android.support.v7.preference.PreferenceManager;
 
 import javax.inject.Inject;
 
@@ -19,14 +18,13 @@ import jalov.easyssh.R;
  */
 
 public class SettingsFragment extends PreferenceFragmentCompat {
-    private SharedPreferences sharedPreferences;
     @Inject
-    SettingsManager settingsManager;
+    SharedPreferences sharedPreferences;
+    @Inject
+    Settings settings;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        settingsManager = new SettingsManager();
         addPreferencesFromResource(R.xml.app_preferences);
 
         // Port preference
@@ -34,8 +32,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         EditTextPreference etp = (EditTextPreference) findPreference(portKey);
         etp.setSummary(sharedPreferences.getString(portKey, DefaultSshdConfig.INSTANCE.getConfig().get(portKey)));
         etp.setOnPreferenceChangeListener((preference, o) -> {
-            etp.setSummary(o.toString());
-            settingsManager.updateConfig(portKey, o.toString());
+            String port = o.toString();
+            etp.setSummary(port);
+            settings.setPort(port);
             return true;
         });
 
@@ -45,9 +44,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         sp.setOnPreferenceChangeListener((preference, newValue) -> {
             boolean value = (Boolean) newValue;
             if(value) {
-                settingsManager.updateConfig("Subsystem", "sftp internal-sftp");
+                settings.enableSftp();
             } else {
-                settingsManager.removeFromConfig("Subsystem");
+                settings.disableSftp();
             }
             return true;
         });
