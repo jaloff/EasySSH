@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Optional;
 
+import jalov.easyssh.auth.AuthorizedKeysActivity;
 import jalov.easyssh.settings.SettingsActivity;
 
 import static jalov.easyssh.RootManager.su;
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         if(runOnStart && !sshdProcessInfo.isPresent()) {
             toggleSSH();
         }
+
     }
 
     @Override
@@ -64,12 +66,16 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        Intent intent;
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+            intent = new Intent(MainActivity.this, SettingsActivity.class);
             startActivityForResult(intent, 0);
             return true;
+        } else if (id == R.id.action_authorized_keys) {
+            intent = new Intent(MainActivity.this, AuthorizedKeysActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);

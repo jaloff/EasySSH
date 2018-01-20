@@ -7,4 +7,8 @@
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never" />
+    <item android:id="@+id/action_authorized_keys"
+        android:orderInCategory="99"
+        android:title="@string/action_authorized_keys"
+        app:showAsAction="never" />
 </menu>

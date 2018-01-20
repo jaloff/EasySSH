@@ -2,6 +2,7 @@ package jalov.easyssh;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
+import jalov.easyssh.auth.AuthorizedKeysActivity;
 import jalov.easyssh.settings.SettingsActivity;
 import jalov.easyssh.settings.SettingsFragment;
 
@@ -17,5 +18,8 @@ public abstract class BuildersModule {
 
     @ContributesAndroidInjector
     abstract SettingsFragment bindSettingsFragment();
+
+    @ContributesAndroidInjector
+    abstract AuthorizedKeysActivity bindAuthorizedKeysActivity();
 }
 
