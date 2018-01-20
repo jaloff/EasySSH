@@ -17,7 +17,7 @@ public class AuthorizedKeysModule {
     @Provides
     @Singleton
     @Inject
-    AuthorizedKeysManager proviAuthorizedKeysManager(SshdConfig sshdConfig) {
+    AuthorizedKeysManager provideAuthorizedKeysManager(SshdConfig sshdConfig) {
         return new AuthorizedKeysManager(sshdConfig);
     }
 }
