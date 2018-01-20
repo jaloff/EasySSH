@@ -13,7 +13,8 @@
         <EditTextPreference
             android:defaultValue="22"
             android:key="@string/p_port"
-            android:title="@string/port_text" />
+            android:title="@string/port_text"
+            android:dialogLayout="@layout/preference_dialog_edittext"/>
         <SwitchPreference
             android:defaultValue="false"
             android:key="@string/sftp_key"
