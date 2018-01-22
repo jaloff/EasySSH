@@ -9,29 +9,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Optional;
-
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
 import jalov.easyssh.auth.AuthorizedKeysActivity;
+import jalov.easyssh.server.SshServer;
 import jalov.easyssh.settings.Settings;
 import jalov.easyssh.settings.SettingsActivity;
 
-import static jalov.easyssh.RootManager.su;
-
 public class MainActivity extends AppCompatActivity {
-    public static final String START_SSH = "start-ssh";
-    public static final String SSHD_APP_NAME = "/system/bin/sshd";
-    public static final String TAG = "MainActivity";
-    private Optional<ProcessInfo> sshdProcessInfo;
+    final String TAG = this.getClass().getName();
     private FloatingActionButton fab;
     @Inject
     Settings settings;
+    @Inject
+    SshServer server;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,12 +38,11 @@ public class MainActivity extends AppCompatActivity {
         fab = findViewById(R.id.fab);
         fab.setOnClickListener(v -> toggleSSH());
 
-        updateSshdProcessInfo();
-
-        if(settings.runOnAppStart() && !sshdProcessInfo.isPresent()) {
-            toggleSSH();
+        if(settings.runOnAppStart()) {
+            server.start();
         }
 
+        updateServerStatus();
     }
 
     @Override
@@ -83,52 +74,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void toggleSSH() {
-        if(sshdProcessInfo.isPresent()) {
-            su("kill -9 " + sshdProcessInfo.get().getPID());
+        if(server.isRunning()) {
+            server.stop();
         } else {
-            su(START_SSH);
+            server.start();
         }
-
-        updateSshdProcessInfo();
+        updateServerStatus();
     }
 
-    public void updateSshdProcessInfo() {
+    public void updateServerStatus() {
         TextView tv = findViewById(R.id.tv_status);
-        sshdProcessInfo = getSshdProcessesInfo();
         String status = "Stopped";
-        if(sshdProcessInfo.isPresent()) {
+        if(server.isRunning()) {
             status = "Running";
             fab.setImageResource(android.R.drawable.ic_media_pause);
         } else {
             fab.setImageResource(android.R.drawable.ic_media_play);
         }
         tv.setText(status);
-    }
-
-    public Optional<ProcessInfo> getSshdProcessesInfo() {
-        Optional<ProcessInfo> processInfo = Optional.empty();
-        try {
-            Process su = Runtime.getRuntime().exec("su");
-            DataOutputStream dos = new DataOutputStream(su.getOutputStream());
-            BufferedReader reader = new BufferedReader(new InputStreamReader(su.getInputStream()));
-
-            dos.writeBytes("ps | grep " + SSHD_APP_NAME + "\n");
-            dos.writeBytes("exit\n");
-            dos.flush();
-            su.waitFor();
-
-            if(reader.ready()) {
-                String line = reader.readLine();
-                String[] cols = line.split("\\s+");
-                processInfo = Optional.of(new ProcessInfo(cols[0], cols[1], cols[8]));
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        return processInfo;
     }
 }
