@@ -24,6 +24,10 @@ public class RootManager {
         }
     }
 
+    public static void saveFile(String path, String fileContent) {
+        su("echo '" + fileContent + "' > " +path);
+    }
+
     public static Optional<InputStream> getFileInputStream(File file) {
         Optional<InputStream> inputStream = Optional.empty();
         try {

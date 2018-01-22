@@ -5,14 +5,24 @@ package jalov.easyssh.auth;
  */
 
 public enum KeyType {
-    RSA, DSA;
+    RSA("ssh-rsa"), DSA("ssh-dss");
+
+    private String string;
+
+    KeyType(String string) {
+        this.string = string;
+    }
 
     public static KeyType getKey(String string) {
-        if(string.compareTo("ssh-rsa") == 0) {
+        if(string.compareTo(RSA.getString()) == 0) {
             return RSA;
-        } else if(string.compareTo("ssh-dss") == 0) {
+        } else if(string.compareTo(DSA.getString()) == 0) {
             return DSA;
         }
         throw new IllegalArgumentException("Can't parse string: " + string);
+    }
+
+    public String getString() {
+        return string;
     }
 }

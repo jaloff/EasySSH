@@ -17,11 +17,13 @@ import jalov.easyssh.R;
  */
 
 public class AuthorizedKeysAdapter extends BaseAdapter {
+    private AuthorizedKeysManager authorizedKeysManager;
     private List<AuthorizedKey> authorizedKeys;
     private static LayoutInflater inflater;
 
-    public AuthorizedKeysAdapter(AuthorizedKeysActivity activity, List<AuthorizedKey> authorizedKeys) {
-        this.authorizedKeys = authorizedKeys;
+    public AuthorizedKeysAdapter(AuthorizedKeysActivity activity, AuthorizedKeysManager authorizedKeysManager) {
+        this.authorizedKeysManager = authorizedKeysManager;
+        this.authorizedKeys = authorizedKeysManager.getKeys();
         inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -63,7 +65,7 @@ public class AuthorizedKeysAdapter extends BaseAdapter {
         holder.type.setText(authorizedKeys.get(i).getType().toString());
         holder.comment.setText(authorizedKeys.get(i).getComment());
         holder.button.setOnClickListener(v -> {
-            authorizedKeys.remove(i);
+            authorizedKeysManager.removeAuthorizedKey(i);
             this.notifyDataSetChanged();
         });
 

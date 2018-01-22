@@ -26,4 +26,9 @@ public class AuthorizedKey {
     public String getComment() {
         return comment;
     }
+
+    @Override
+    public String toString() {
+        return type.getString() + " " + key + " " + comment;
+    }
 }
