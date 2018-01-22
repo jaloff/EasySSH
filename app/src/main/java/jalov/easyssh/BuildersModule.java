@@ -14,6 +14,9 @@ import jalov.easyssh.settings.SettingsFragment;
 public abstract class BuildersModule {
 
     @ContributesAndroidInjector
+    abstract MainActivity bindMainActivity();
+
+    @ContributesAndroidInjector
     abstract SettingsActivity bindSettingsActivity();
 
     @ContributesAndroidInjector

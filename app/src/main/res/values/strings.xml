@@ -1,11 +1,13 @@
 <resources>
     <string name="app_name">Easy SSH</string>
     <string name="action_settings">Settings</string>
-    <string name="action_authorized_keys">Authorized Keys</string>
-    <string name="p_port">port</string>
+    <string name="action_authorized_keys">Authorized Keys</string
+        >
     <string name="port_text">Port</string>
     <string name="run_on_app_start_text">Run SSH on App Start</string>
-    <string name="run_on_app_start_key">run_on_app_start</string>
     <string name="sftp_text">Enable SFTP</string>
+
+    <string name="port_key">port</string>
     <string name="sftp_key">sftp</string>
+    <string name="run_on_app_start_key">run_on_app_start</string>
 </resources>

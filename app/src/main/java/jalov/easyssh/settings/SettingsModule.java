@@ -1,6 +1,7 @@
 package jalov.easyssh.settings;
 
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.preference.PreferenceManager;
 
 import javax.inject.Inject;
@@ -26,8 +27,8 @@ public class SettingsModule {
     @Provides
     @Singleton
     @Inject
-    Settings provideSettings(SshdConfig sshdConfig) {
-        return new Settings(sshdConfig);
+    Settings provideSettings(SshdConfig sshdConfig, SharedPreferences sharedPreferences, Resources resources) {
+        return new Settings(sshdConfig, sharedPreferences, resources);
     }
 
     @Provides
@@ -36,4 +37,5 @@ public class SettingsModule {
     SharedPreferences provideSharedPreferences(App app) {
         return PreferenceManager.getDefaultSharedPreferences(app.getApplicationContext());
     }
+
 }

@@ -1,7 +1,6 @@
 package jalov.easyssh.settings;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v14.preference.SwitchPreference;
 import android.support.v7.preference.EditTextPreference;
@@ -19,8 +18,6 @@ import jalov.easyssh.R;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
     @Inject
-    SharedPreferences sharedPreferences;
-    @Inject
     Settings settings;
 
     @Override
@@ -28,9 +25,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         addPreferencesFromResource(R.xml.app_preferences);
 
         // Port preference
-        String portKey = getResources().getString(R.string.p_port);
+        String portKey = settings.getPortKey();
         EditTextPreference etp = (EditTextPreference) findPreference(portKey);
-        etp.setSummary(sharedPreferences.getString(portKey, DefaultSshdConfig.INSTANCE.getConfig().get(portKey)));
+        etp.setSummary(settings.getPort());
         etp.setOnPreferenceChangeListener((preference, o) -> {
             String port = o.toString();
             etp.setSummary(port);
@@ -39,7 +36,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         // SFTP preference
-        String sftpKey = getResources().getString(R.string.sftp_key);
+        String sftpKey = settings.getSftpKey();
         SwitchPreference sp = (SwitchPreference) findPreference(sftpKey);
         sp.setOnPreferenceChangeListener((preference, newValue) -> {
             boolean value = (Boolean) newValue;

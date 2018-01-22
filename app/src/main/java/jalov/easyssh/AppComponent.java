@@ -12,7 +12,7 @@ import jalov.easyssh.settings.SettingsModule;
  */
 
 @Singleton
-@Component(modules = {SettingsModule.class, AuthorizedKeysModule.class, BuildersModule.class})
+@Component(modules = {SettingsModule.class, AuthorizedKeysModule.class, ResourcesModule.class, BuildersModule.class})
 public interface AppComponent {
     @Component.Builder
     interface Builder {

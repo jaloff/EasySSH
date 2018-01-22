@@ -12,7 +12,7 @@
     <PreferenceCategory android:title="SSHD Config">
         <EditTextPreference
             android:defaultValue="22"
-            android:key="@string/p_port"
+            android:key="@string/port_key"
             android:title="@string/port_text"
             android:dialogLayout="@layout/preference_dialog_edittext"/>
         <SwitchPreference
