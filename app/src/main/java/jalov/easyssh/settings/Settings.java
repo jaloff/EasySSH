@@ -1,10 +1,14 @@
 package jalov.easyssh.settings;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 
 import javax.inject.Singleton;
 
+import jalov.easyssh.StartOnBootReceiver;
 import jalov.easyssh.R;
 
 /**
@@ -18,6 +22,7 @@ public class Settings {
     private String portKey;
     private String runOnAppStartKey;
     private String sftpKey;
+    private String runOnBootKey;
     private final String PID_FILEPATH_KEY = "PidFile";
 
     public Settings(SshdConfig sshdConfig, SharedPreferences sharedPreferences, Resources resources) {
@@ -26,6 +31,7 @@ public class Settings {
         this.portKey = resources.getString(R.string.port_key);
         this.runOnAppStartKey = resources.getString(R.string.run_on_app_start_key);
         this.sftpKey = resources.getString(R.string.sftp_key);
+        this.runOnBootKey = resources.getString(R.string.run_on_boot_key);
     }
 
     public void enableSftp() {
@@ -34,6 +40,13 @@ public class Settings {
 
     public void disableSftp() {
         sshdConfig.remove("Subsystem");
+    }
+
+    public void setRunOnBoot(boolean runOnBoot, Context context) {
+        final int state = runOnBoot ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED : PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
+        ComponentName component = new ComponentName(context, StartOnBootReceiver.class);
+        PackageManager packageManager = context.getPackageManager();
+        packageManager.setComponentEnabledSetting(component, state, PackageManager.DONT_KILL_APP);
     }
 
     public void setPort(String port) {
@@ -58,6 +71,10 @@ public class Settings {
 
     public String getSftpKey() {
         return sftpKey;
+    }
+
+    public String getRunOnBootKey() {
+        return runOnBootKey;
     }
 
     public String getSshPidFilePath() {

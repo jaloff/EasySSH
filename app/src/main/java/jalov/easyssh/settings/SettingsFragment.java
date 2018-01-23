@@ -26,25 +26,34 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         // Port preference
         String portKey = settings.getPortKey();
-        EditTextPreference etp = (EditTextPreference) findPreference(portKey);
-        etp.setSummary(settings.getPort());
-        etp.setOnPreferenceChangeListener((preference, o) -> {
+        EditTextPreference portPreference = (EditTextPreference) findPreference(portKey);
+        portPreference.setSummary(settings.getPort());
+        portPreference.setOnPreferenceChangeListener((preference, o) -> {
             String port = o.toString();
-            etp.setSummary(port);
+            portPreference.setSummary(port);
             settings.setPort(port);
             return true;
         });
 
         // SFTP preference
         String sftpKey = settings.getSftpKey();
-        SwitchPreference sp = (SwitchPreference) findPreference(sftpKey);
-        sp.setOnPreferenceChangeListener((preference, newValue) -> {
+        SwitchPreference sftpPreference = (SwitchPreference) findPreference(sftpKey);
+        sftpPreference.setOnPreferenceChangeListener((preference, newValue) -> {
             boolean value = (Boolean) newValue;
             if(value) {
                 settings.enableSftp();
             } else {
                 settings.disableSftp();
             }
+            return true;
+        });
+
+        // SFTP preference
+        String runOnBootKey = settings.getRunOnBootKey();
+        SwitchPreference runOnBootPreference = (SwitchPreference) findPreference(runOnBootKey);
+        runOnBootPreference.setOnPreferenceChangeListener((preference, newValue) -> {
+            boolean value = (Boolean) newValue;
+            settings.setRunOnBoot(value, getContext());
             return true;
         });
     }

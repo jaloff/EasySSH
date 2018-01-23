@@ -28,5 +28,8 @@ public abstract class BuildersModule {
 
     @ContributesAndroidInjector
     abstract SshServerService bindSshServerService();
+
+    @ContributesAndroidInjector
+    abstract StartOnBootReceiver bindStartOnBootReceiver();
 }
 
