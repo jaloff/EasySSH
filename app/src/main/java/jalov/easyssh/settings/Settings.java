@@ -19,15 +19,17 @@ import jalov.easyssh.R;
 public class Settings {
     private SshdConfig sshdConfig;
     private SharedPreferences sharedPreferences;
+    private Context context;
     private String portKey;
     private String runOnAppStartKey;
     private String sftpKey;
     private String runOnBootKey;
     private final String PID_FILEPATH_KEY = "PidFile";
 
-    public Settings(SshdConfig sshdConfig, SharedPreferences sharedPreferences, Resources resources) {
+    public Settings(SshdConfig sshdConfig, SharedPreferences sharedPreferences, Resources resources, Context context) {
         this.sshdConfig = sshdConfig;
         this.sharedPreferences = sharedPreferences;
+        this.context = context;
         this.portKey = resources.getString(R.string.port_key);
         this.runOnAppStartKey = resources.getString(R.string.run_on_app_start_key);
         this.sftpKey = resources.getString(R.string.sftp_key);
@@ -42,7 +44,7 @@ public class Settings {
         sshdConfig.remove("Subsystem");
     }
 
-    public void setRunOnBoot(boolean runOnBoot, Context context) {
+    public void setRunOnBoot(boolean runOnBoot) {
         final int state = runOnBoot ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED : PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
         ComponentName component = new ComponentName(context, StartOnBootReceiver.class);
         PackageManager packageManager = context.getPackageManager();

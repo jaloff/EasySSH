@@ -53,7 +53,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         SwitchPreference runOnBootPreference = (SwitchPreference) findPreference(runOnBootKey);
         runOnBootPreference.setOnPreferenceChangeListener((preference, newValue) -> {
             boolean value = (Boolean) newValue;
-            settings.setRunOnBoot(value, getContext());
+            settings.setRunOnBoot(value);
             return true;
         });
     }
