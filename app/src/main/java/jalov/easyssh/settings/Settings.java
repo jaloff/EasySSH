@@ -18,6 +18,7 @@ public class Settings {
     private String portKey;
     private String runOnAppStartKey;
     private String sftpKey;
+    private final String PID_FILEPATH_KEY = "PidFile";
 
     public Settings(SshdConfig sshdConfig, SharedPreferences sharedPreferences, Resources resources) {
         this.sshdConfig = sshdConfig;
@@ -57,5 +58,9 @@ public class Settings {
 
     public String getSftpKey() {
         return sftpKey;
+    }
+
+    public String getSshPidFilePath() {
+        return sshdConfig.get(PID_FILEPATH_KEY);
     }
 }

@@ -1,5 +1,8 @@
 package jalov.easyssh.server;
 
+import android.content.Context;
+
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -14,7 +17,8 @@ public class ServerModule {
 
     @Provides
     @Singleton
-    public static SshServer providesSshServer() {
-        return new SshdServer();
+    @Inject
+    SshServer providesSshServer(Context context) {
+        return new SshdServer(context);
     }
 }

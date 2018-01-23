@@ -1,5 +1,8 @@
 package jalov.easyssh.server;
 
+import android.content.Context;
+import android.content.Intent;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -7,7 +10,6 @@ import java.io.InputStreamReader;
 import java.util.Optional;
 
 import jalov.easyssh.ProcessInfo;
-import jalov.easyssh.RootManager;
 
 /**
  * Created by jalov on 2018-01-22.
@@ -15,21 +17,28 @@ import jalov.easyssh.RootManager;
 
 public class SshdServer implements SshServer {
     final String TAG = this.getClass().getName();
-    public static final String START_SSH = "start-ssh";
     public static final String SSHD_APP_NAME = "/system/bin/sshd";
     private Optional<ProcessInfo> sshdProcessInfo;
+    private Context context;
+    private Intent intent;
+
+    public SshdServer(Context context) {
+        this.context = context;
+        this.intent = new Intent(context, SshServerService.class);
+        this.sshdProcessInfo = getSshdProcessInfo();
+    }
 
     @Override
     public void start() {
         if(!sshdProcessInfo.isPresent()) {
-            RootManager.su(START_SSH);
+            context.startService(intent);
         }
     }
 
     @Override
     public void stop() {
         if(sshdProcessInfo.isPresent()) {
-            RootManager.su("kill -9 " + sshdProcessInfo.get().getPID());
+            context.stopService(intent);
         }
     }
 
@@ -41,11 +50,11 @@ public class SshdServer implements SshServer {
 
     @Override
     public boolean isRunning() {
-        sshdProcessInfo = getSshdProcessesInfo();
+        sshdProcessInfo = getSshdProcessInfo();
         return sshdProcessInfo.isPresent();
     }
 
-    public Optional<ProcessInfo> getSshdProcessesInfo() {
+    public Optional<ProcessInfo> getSshdProcessInfo() {
         Optional<ProcessInfo> processInfo = Optional.empty();
         try {
             Process su = Runtime.getRuntime().exec("su");
@@ -70,5 +79,6 @@ public class SshdServer implements SshServer {
         }
 
         return processInfo;
+
     }
 }

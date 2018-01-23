@@ -1,5 +1,6 @@
 package jalov.easyssh;
 
+import android.content.Context;
 import android.content.res.Resources;
 
 import javax.inject.Inject;
@@ -19,5 +20,12 @@ public class ResourcesModule {
     @Inject
     Resources provideResources(App app) {
         return app.getResources();
+    }
+
+    @Provides
+    @Singleton
+    @Inject
+    Context provideApplicationContext(App app) {
+        return app.getApplicationContext();
     }
 }

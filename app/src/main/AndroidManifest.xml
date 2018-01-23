@@ -27,6 +27,8 @@
         <activity android:name=".auth.AuthorizedKeysActivity"
             android:label="@string/action_authorized_keys"
             android:parentActivityName=".MainActivity"/>
+
+        <service android:name=".server.SshServerService" />
     </application>
 
 </manifest>
