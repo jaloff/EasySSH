@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="jalov.easyssh">
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -28,6 +30,12 @@
             android:label="@string/action_authorized_keys"
             android:parentActivityName=".MainActivity"/>
 
+        <receiver android:name=".StartOnBootReceiver"
+            android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
         <service android:name=".server.SshServerService" />
     </application>
 
