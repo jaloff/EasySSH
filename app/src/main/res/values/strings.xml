@@ -8,6 +8,9 @@
     <string name="sftp_text">Enable SFTP</string>
     <string name="run_on_boot_text">Run on boot</string>
 
+    <string name="notification_title">SSH Server</string>
+    <string name="notification_text">Running</string>
+
     <string name="port_key">port</string>
     <string name="sftp_key">sftp</string>
     <string name="run_on_app_start_key">run_on_app_start</string>
