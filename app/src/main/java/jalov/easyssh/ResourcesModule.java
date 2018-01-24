@@ -28,4 +28,11 @@ public class ResourcesModule {
     Context provideApplicationContext(App app) {
         return app.getApplicationContext();
     }
+
+    @Provides
+    @Singleton
+    @Inject
+    AppNotification provideAppNotification(Context context) {
+        return new AppNotification(context);
+    }
 }
