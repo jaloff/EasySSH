@@ -1,15 +1,18 @@
 package jalov.easyssh.server;
 
-import android.content.Context;
-import android.content.Intent;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Optional;
 
+import jalov.easyssh.AppNotification;
 import jalov.easyssh.ProcessInfo;
+import jalov.easyssh.RootManager;
+import jalov.easyssh.settings.Settings;
 
 /**
  * Created by jalov on 2018-01-22.
@@ -18,27 +21,39 @@ import jalov.easyssh.ProcessInfo;
 public class SshdServer implements SshServer {
     final String TAG = this.getClass().getName();
     public static final String SSHD_APP_NAME = "/system/bin/sshd";
+    private final String START_SSH = "start-ssh";
+    private final String KILL_COMMAND = "kill -9 ";
     private Optional<ProcessInfo> sshdProcessInfo;
-    private Context context;
-    private Intent intent;
+    private Settings settings;
+    private AppNotification appNotification;
 
-    public SshdServer(Context context) {
-        this.context = context;
-        this.intent = new Intent(context, SshServerService.class);
+    public SshdServer(Settings settings, AppNotification appNotification) {
+        this.settings = settings;
+        this.appNotification = appNotification;
         this.sshdProcessInfo = getSshdProcessInfo();
     }
 
     @Override
     public void start() {
         if(!sshdProcessInfo.isPresent()) {
-            context.startService(intent);
+            RootManager.su(START_SSH);
+            appNotification.show();
         }
     }
 
     @Override
     public void stop() {
         if(sshdProcessInfo.isPresent()) {
-            context.stopService(intent);
+            File file = new File(settings.getSshPidFilePath());
+            Optional<InputStream> inputStream = RootManager.getFileInputStream(file);
+            try(BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream.get()))) {
+                RootManager.su(KILL_COMMAND + reader.readLine());
+                appNotification.hide();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -79,6 +94,5 @@ public class SshdServer implements SshServer {
         }
 
         return processInfo;
-
     }
 }
