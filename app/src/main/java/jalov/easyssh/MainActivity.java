@@ -9,6 +9,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         server.addOnStatusChangeListener(serverStatusListener);
+        updateIPAdress();
     }
 
     @Override
@@ -92,6 +95,14 @@ public class MainActivity extends AppCompatActivity {
         } else {
             fab.setImageResource(android.R.drawable.ic_media_play);
         }
+        tv.setText(text);
+    }
+
+    public void updateIPAdress() {
+        TextView tv = findViewById(R.id.tv_ip_address);
+        Optional<String> ipAddress = NetworkUtils.getIPAdress();
+        String text = ipAddress.isPresent() ? "root@" + ipAddress.get() + ":" + settings.getPort()
+                : getResources().getString(R.string.no_ip_address);
         tv.setText(text);
     }
 

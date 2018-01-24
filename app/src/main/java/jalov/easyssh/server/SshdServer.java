@@ -25,6 +25,7 @@ public class SshdServer extends SshServer {
     private AppNotification appNotification;
 
     public SshdServer(Settings settings, AppNotification appNotification) {
+        super();
         this.settings = settings;
         this.appNotification = appNotification;
         this.running = getSshdProcessInfo().isPresent();
