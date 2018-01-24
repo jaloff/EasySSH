@@ -2,10 +2,7 @@ package jalov.easyssh.server;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Optional;
 
@@ -22,7 +19,7 @@ public class SshdServer implements SshServer {
     final String TAG = this.getClass().getName();
     public static final String SSHD_APP_NAME = "/system/bin/sshd";
     private final String START_SSH = "start-ssh";
-    private final String KILL_COMMAND = "kill -9 ";
+    private final String STOP_SSH = "pkill -f " + SSHD_APP_NAME + "*";
     private Optional<ProcessInfo> sshdProcessInfo;
     private Settings settings;
     private AppNotification appNotification;
@@ -35,7 +32,7 @@ public class SshdServer implements SshServer {
 
     @Override
     public void start() {
-        if(!sshdProcessInfo.isPresent()) {
+        if (!sshdProcessInfo.isPresent()) {
             RootManager.su(START_SSH);
             appNotification.show();
         }
@@ -43,17 +40,9 @@ public class SshdServer implements SshServer {
 
     @Override
     public void stop() {
-        if(sshdProcessInfo.isPresent()) {
-            File file = new File(settings.getSshPidFilePath());
-            Optional<InputStream> inputStream = RootManager.getFileInputStream(file);
-            try(BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream.get()))) {
-                RootManager.su(KILL_COMMAND + reader.readLine());
-                appNotification.hide();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if (sshdProcessInfo.isPresent()) {
+            RootManager.su(STOP_SSH);
+            appNotification.hide();
         }
     }
 
@@ -81,7 +70,7 @@ public class SshdServer implements SshServer {
             dos.flush();
             su.waitFor();
 
-            if(reader.ready()) {
+            if (reader.ready()) {
                 String line = reader.readLine();
                 String[] cols = line.split("\\s+");
                 processInfo = Optional.of(new ProcessInfo(cols[0], cols[1], cols[8]));
