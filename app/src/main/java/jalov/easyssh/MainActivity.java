@@ -16,10 +16,12 @@ import jalov.easyssh.auth.AuthorizedKeysActivity;
 import jalov.easyssh.server.SshServer;
 import jalov.easyssh.settings.Settings;
 import jalov.easyssh.settings.SettingsActivity;
+import jalov.easyssh.settings.StatusChangeListener;
 
 public class MainActivity extends AppCompatActivity {
     final String TAG = this.getClass().getName();
     private FloatingActionButton fab;
+    private StatusChangeListener serverStatusListener = this::updateServerStatus;
     @Inject
     Settings settings;
     @Inject
@@ -42,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
             server.start();
         }
 
-        updateServerStatus();
+        server.addOnStatusChangeListener(serverStatusListener);
     }
 
     @Override
@@ -79,18 +81,23 @@ public class MainActivity extends AppCompatActivity {
         } else {
             server.start();
         }
-        updateServerStatus();
     }
 
-    public void updateServerStatus() {
+    public void updateServerStatus(boolean status) {
         TextView tv = findViewById(R.id.tv_status);
-        String status = "Stopped";
-        if(server.isRunning()) {
-            status = "Running";
+        String text = "Stopped";
+        if(status) {
+            text = "Running";
             fab.setImageResource(android.R.drawable.ic_media_pause);
         } else {
             fab.setImageResource(android.R.drawable.ic_media_play);
         }
-        tv.setText(status);
+        tv.setText(text);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        server.removeOnStatusChangeListener(serverStatusListener);
     }
 }

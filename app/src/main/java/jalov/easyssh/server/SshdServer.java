@@ -15,50 +15,47 @@ import jalov.easyssh.settings.Settings;
  * Created by jalov on 2018-01-22.
  */
 
-public class SshdServer implements SshServer {
+public class SshdServer extends SshServer {
     final String TAG = this.getClass().getName();
     public static final String SSHD_APP_NAME = "/system/bin/sshd";
     private final String START_SSH = "start-ssh";
     private final String STOP_SSH = "pkill -f " + SSHD_APP_NAME + "*";
-    private Optional<ProcessInfo> sshdProcessInfo;
+    private boolean running;
     private Settings settings;
     private AppNotification appNotification;
 
     public SshdServer(Settings settings, AppNotification appNotification) {
         this.settings = settings;
         this.appNotification = appNotification;
-        this.sshdProcessInfo = getSshdProcessInfo();
+        this.running = getSshdProcessInfo().isPresent();
     }
 
     @Override
     public void start() {
-        if (!sshdProcessInfo.isPresent()) {
+        if (!running) {
             RootManager.su(START_SSH);
+            running = true;
             appNotification.show();
+            notifyListeners();
         }
     }
 
     @Override
     public void stop() {
-        if (sshdProcessInfo.isPresent()) {
+        if (running) {
             RootManager.su(STOP_SSH);
+            running = false;
             appNotification.hide();
+            notifyListeners();
         }
     }
 
     @Override
-    public void restart() {
-        stop();
-        start();
-    }
-
-    @Override
     public boolean isRunning() {
-        sshdProcessInfo = getSshdProcessInfo();
-        return sshdProcessInfo.isPresent();
+        return running;
     }
 
-    public Optional<ProcessInfo> getSshdProcessInfo() {
+    private Optional<ProcessInfo> getSshdProcessInfo() {
         Optional<ProcessInfo> processInfo = Optional.empty();
         try {
             Process su = Runtime.getRuntime().exec("su");
