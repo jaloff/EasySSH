@@ -10,6 +10,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import jalov.easyssh.server.SshServer;
 
 /**
  * Created by jalov on 2018-01-17.
@@ -20,8 +21,8 @@ public class SettingsModule {
 
     @Provides
     @Singleton
-    static SshdConfig provideSshdConfig() {
-        return new SshdConfig();
+    static SshdConfig provideSshdConfig(SshServer server) {
+        return new SshdConfig(server);
     }
 
     @Provides

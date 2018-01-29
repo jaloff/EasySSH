@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import javax.inject.Singleton;
 
 import jalov.easyssh.RootManager;
+import jalov.easyssh.server.SshServer;
 
 /**
  * Created by jalov on 2018-01-16.
@@ -31,8 +32,10 @@ public class SshdConfig {
     public static final String MOUNT_SYSTEM_RO_CMD = "mount -o remount,rw /system";
     private Map<String,String> settings;
     private List<String> hostKeys;
+    private SshServer server;
 
-    public SshdConfig() {
+    public SshdConfig(SshServer server) {
+        this.server = server;
         load();
     }
 
@@ -54,7 +57,7 @@ public class SshdConfig {
                         }) // Store HostKeys separately
                         .collect(Collectors.toMap(a -> a[0], a -> Arrays.stream(a).skip(1L).collect(Collectors.joining(" "))));
 
-                settings.entrySet().stream().forEach(es -> Log.d(TAG, "load: " + es.getKey() + "=" + es.getValue()));
+                settings.entrySet().forEach(es -> Log.d(TAG, "load: " + es.getKey() + "=" + es.getValue()));
                 addMissingConfiguration(settings);
 
             } catch (IOException e) {
@@ -93,17 +96,21 @@ public class SshdConfig {
 
     private void save() {
         StringBuilder fileContent = new StringBuilder();
-        hostKeys.stream().forEach(hk -> fileContent.append("HostKey " + hk + "\n"));
-        settings.entrySet().stream().forEach(es -> fileContent.append(es.getKey() + " " + es.getValue() + "\n"));
+        hostKeys.forEach(hk -> fileContent.append("HostKey " + hk + "\n"));
+        settings.entrySet().forEach(es -> fileContent.append(es.getKey() + " " + es.getValue() + "\n"));
         RootManager.su(MOUNT_SYSTEM_RW_CMD + "\n" +
                 "echo '" + fileContent.toString() + "' > " + SSHD_CONFIG_PATH + "\n" +
                 MOUNT_SYSTEM_RO_CMD
         );
+        
+        if(server.isRunning()) {
+            server.restart();
+        }
     }
 
     private void addMissingConfiguration(Map<String,String> config) {
         Map<String,String> defaultConfig = DefaultSshdConfig.INSTANCE.getConfig();
-        defaultConfig.entrySet().stream().forEach( es -> config.putIfAbsent(es.getKey(), es.getValue()));
+        defaultConfig.entrySet().forEach( es -> config.putIfAbsent(es.getKey(), es.getValue()));
         if(hostKeys.isEmpty()) {
             hostKeys.add(RSA_HOSTKEY_PATH);
             hostKeys.add(DSA_HOSTKEY_PATH);

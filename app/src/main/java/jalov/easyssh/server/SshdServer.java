@@ -9,7 +9,6 @@ import java.util.Optional;
 import jalov.easyssh.AppNotification;
 import jalov.easyssh.ProcessInfo;
 import jalov.easyssh.RootManager;
-import jalov.easyssh.settings.Settings;
 
 /**
  * Created by jalov on 2018-01-22.
@@ -21,12 +20,10 @@ public class SshdServer extends SshServer {
     private final String START_SSH = "start-ssh";
     private final String STOP_SSH = "pkill -f " + SSHD_APP_NAME + "*";
     private boolean running;
-    private Settings settings;
     private AppNotification appNotification;
 
-    public SshdServer(Settings settings, AppNotification appNotification) {
+    public SshdServer(AppNotification appNotification) {
         super();
-        this.settings = settings;
         this.appNotification = appNotification;
         this.running = getSshdProcessInfo().isPresent();
     }
