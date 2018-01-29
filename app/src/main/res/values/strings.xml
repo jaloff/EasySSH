@@ -6,6 +6,8 @@
     <string name="server_address_label">Server address:</string>
     <string name="no_ip_address">Unable to resolve IP address</string>
 
+    <string name="port_validation_error_text">Port number has to be in 1-65535 range.</string>
+
     <string name="port_text">Port</string>
     <string name="run_on_app_start_text">Run SSH on App Start</string>
     <string name="sftp_text">Enable SFTP</string>

@@ -10,11 +10,11 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="SSHD Config">
-        <EditTextPreference
+        <jalov.easyssh.settings.ValidatedEditTextPreference
             android:defaultValue="22"
             android:key="@string/port_key"
-            android:title="@string/port_text"
-            android:dialogLayout="@layout/preference_dialog_edittext"/>
+            android:title="@string/port_text" />
+
         <SwitchPreference
             android:defaultValue="false"
             android:key="@string/sftp_key"

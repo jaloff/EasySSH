@@ -3,7 +3,8 @@ package jalov.easyssh.settings;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v14.preference.SwitchPreference;
-import android.support.v7.preference.EditTextPreference;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
 import javax.inject.Inject;
@@ -26,11 +27,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         // Port preference
         String portKey = settings.getPortKey();
-        EditTextPreference portPreference = (EditTextPreference) findPreference(portKey);
-        portPreference.setSummary(settings.getPort());
+        ValidatedEditTextPreference portPreference = (ValidatedEditTextPreference) findPreference(portKey);
+        String portErrorMessage = getResources().getString(R.string.port_validation_error_text);
+        portPreference.addValidator(new Validator<>(s -> s.matches("^[1-9][\\d]{0,4}$"), portErrorMessage));
         portPreference.setOnPreferenceChangeListener((preference, o) -> {
             String port = o.toString();
-            portPreference.setSummary(port);
             settings.setPort(port);
             return true;
         });
@@ -62,5 +63,21 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     public void onAttach(Context context) {
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
+    }
+
+    @Override
+    public void onDisplayPreferenceDialog(Preference preference) {
+        DialogFragment fragment = null;
+
+        if(preference instanceof ValidatedEditTextPreference) {
+            fragment = ValidatedPreferenceDialogFragmentCompat.newInstance(preference.getKey());
+        }
+
+        if(fragment != null) {
+            fragment.setTargetFragment(this, 0);;
+            fragment.show(getFragmentManager(), "android.support.v7.preference.PreferenceFragment.DIALOG");
+        } else {
+            super.onDisplayPreferenceDialog(preference);
+        }
     }
 }
