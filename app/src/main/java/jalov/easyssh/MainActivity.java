@@ -15,6 +15,7 @@ import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
 import jalov.easyssh.auth.AuthorizedKeysActivity;
+import jalov.easyssh.auth.AuthorizedKeysManager;
 import jalov.easyssh.server.SshServer;
 import jalov.easyssh.settings.Settings;
 import jalov.easyssh.settings.SettingsActivity;
@@ -28,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     Settings settings;
     @Inject
     SshServer server;
+    @Inject
+    AuthorizedKeysManager authorizedKeysManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +45,13 @@ public class MainActivity extends AppCompatActivity {
         fab = findViewById(R.id.fab);
         fab.setOnClickListener(v -> toggleSSH());
 
+        authorizedKeysManager.createKeysFileIfNotExist();
+
         if(settings.runOnAppStart()) {
             server.start();
         }
 
         server.addOnStatusChangeListener(serverStatusListener);
-        updateIPAdress();
     }
 
     @Override
@@ -87,24 +91,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void updateServerStatus(boolean status) {
-        TextView tv = findViewById(R.id.tv_status);
-        String text = "Stopped";
+        TextView statusTv = findViewById(R.id.tv_status);
+        String statusText = "Stopped";
         if(status) {
-            text = "Running";
+            statusText = "Running";
             fab.setImageResource(android.R.drawable.ic_media_pause);
         } else {
             fab.setImageResource(android.R.drawable.ic_media_play);
         }
-        tv.setText(text);
+        statusTv.setText(statusText);
+        // Update IP Address
+        TextView ipTv = findViewById(R.id.tv_ip_address);
+        TextView portTv = findViewById(R.id.tv_port);
+        String ipText = "";
+        String portText = "";
+        if(status) {
+            Optional<String> ipAddress = NetworkUtils.getIPAdress();
+            ipText = ipAddress.isPresent() ? ipAddress.get() : getResources().getString(R.string.no_ip_address);
+            portText = settings.getPort();
+        }
+        ipTv.setText(ipText);
+        portTv.setText(portText);
     }
 
-    public void updateIPAdress() {
-        TextView tv = findViewById(R.id.tv_ip_address);
-        Optional<String> ipAddress = NetworkUtils.getIPAdress();
-        String text = ipAddress.isPresent() ? "root@" + ipAddress.get() + ":" + settings.getPort()
-                : getResources().getString(R.string.no_ip_address);
-        tv.setText(text);
-    }
 
     @Override
     protected void onDestroy() {
