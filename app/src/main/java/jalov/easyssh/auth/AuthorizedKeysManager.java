@@ -61,6 +61,11 @@ public class AuthorizedKeysManager {
         saveAuthorizedKeys();
     }
 
+    public void createKeysFileIfNotExist() {
+        String path = sshdConfig.get("AuthorizedKeysFile");
+        RootManager.su("touch " + path);
+    }
+
     private List<AuthorizedKey> readAuthorizedKeysFromInputStream(InputStream inputStream) {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
             return reader.lines().map(l -> l.split("\\s+"))

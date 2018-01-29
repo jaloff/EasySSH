@@ -4,13 +4,15 @@ import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Singleton;
@@ -41,9 +43,10 @@ public class SshdConfig {
         settings = new HashMap<>();
         hostKeys = new ArrayList<>();
         File sshdConfigFile = new File(SSHD_CONFIG_PATH);
-        if(sshdConfigFile.exists()) {
+        Optional<InputStream> inputStream = RootManager.getFileInputStream(sshdConfigFile);
+        if(inputStream.isPresent()) {
             // Load config from file
-            try (BufferedReader reader = new BufferedReader(new FileReader(sshdConfigFile))) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream.get()))) {
                 settings = reader.lines().filter(l -> !l.isEmpty())
                         .filter(l -> l.charAt(0) != '#') // Ignore comments
                         .map(l -> l.split("\\s+"))

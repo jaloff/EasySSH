@@ -9,6 +9,7 @@ import java.util.Optional;
 import jalov.easyssh.AppNotification;
 import jalov.easyssh.ProcessInfo;
 import jalov.easyssh.RootManager;
+import jalov.easyssh.auth.AuthorizedKeysManager;
 
 /**
  * Created by jalov on 2018-01-22.
@@ -20,16 +21,19 @@ public class SshdServer extends SshServer {
     private final String STOP_SSH = "pkill -f " + SSHD_APP_NAME + "*";
     private boolean running;
     private AppNotification appNotification;
+    private AuthorizedKeysManager authorizedKeysManager;
 
-    public SshdServer(AppNotification appNotification) {
+    public SshdServer(AppNotification appNotification, AuthorizedKeysManager authorizedKeysManager) {
         super();
         this.appNotification = appNotification;
+        this.authorizedKeysManager = authorizedKeysManager;
         this.running = getSshdProcessInfo().isPresent();
     }
 
     @Override
     public void start() {
         if (!running) {
+            authorizedKeysManager.createKeysFileIfNotExist();
             RootManager.su(SSHD_APP_NAME);
             running = true;
             appNotification.show();
