@@ -19,7 +19,10 @@ public class RootManager {
             os.writeBytes(command + "\n");
             os.writeBytes("exit\n");
             os.flush();
+            ps.waitFor();
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }

@@ -25,11 +25,9 @@ import jalov.easyssh.server.SshServer;
 @Singleton
 public class SshdConfig {
     public static final String TAG = "SettingsManager";
-    public static final String SSHD_CONFIG_PATH = "/system/etc/ssh/sshd_config";
+    public static final String SSHD_CONFIG_PATH = "/data/ssh/sshd_config";
     public static final String RSA_HOSTKEY_PATH = "/data/ssh/ssh_host_rsa_key";
     public static final String DSA_HOSTKEY_PATH = "/data/ssh/ssh_host_dsa_key";
-    public static final String MOUNT_SYSTEM_RW_CMD = "mount -o remount,rw /system";
-    public static final String MOUNT_SYSTEM_RO_CMD = "mount -o remount,rw /system";
     private Map<String,String> settings;
     private List<String> hostKeys;
     private SshServer server;
@@ -65,7 +63,7 @@ public class SshdConfig {
             }
         } else {
             // Create new config file
-            Log.d(TAG, "Saving new file");
+            Log.d(TAG, "Creating new file");
             addMissingConfiguration(settings);
             save();
         }
@@ -98,11 +96,8 @@ public class SshdConfig {
         StringBuilder fileContent = new StringBuilder();
         hostKeys.forEach(hk -> fileContent.append("HostKey " + hk + "\n"));
         settings.entrySet().forEach(es -> fileContent.append(es.getKey() + " " + es.getValue() + "\n"));
-        RootManager.su(MOUNT_SYSTEM_RW_CMD + "\n" +
-                "echo '" + fileContent.toString() + "' > " + SSHD_CONFIG_PATH + "\n" +
-                MOUNT_SYSTEM_RO_CMD
-        );
-        
+        RootManager.su("echo '" + fileContent.toString() + "' > " + SSHD_CONFIG_PATH);
+
         if(server.isRunning()) {
             server.restart();
         }

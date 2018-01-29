@@ -17,7 +17,6 @@ import jalov.easyssh.RootManager;
 public class SshdServer extends SshServer {
     final String TAG = this.getClass().getName();
     public static final String SSHD_APP_NAME = "/system/bin/sshd";
-    private final String START_SSH = "start-ssh";
     private final String STOP_SSH = "pkill -f " + SSHD_APP_NAME + "*";
     private boolean running;
     private AppNotification appNotification;
@@ -31,7 +30,7 @@ public class SshdServer extends SshServer {
     @Override
     public void start() {
         if (!running) {
-            RootManager.su(START_SSH);
+            RootManager.su(SSHD_APP_NAME);
             running = true;
             appNotification.show();
             notifyListeners();
