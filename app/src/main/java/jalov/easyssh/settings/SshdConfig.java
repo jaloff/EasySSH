@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 import javax.inject.Singleton;
 
-import jalov.easyssh.RootManager;
+import jalov.easyssh.utils.RootManager;
 import jalov.easyssh.server.SshServer;
 
 /**

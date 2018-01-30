@@ -28,7 +28,7 @@ public class App extends Application implements HasActivityInjector, HasServiceI
     @Override
     public void onCreate() {
         super.onCreate();
-        DaggerAppComponent.builder()
+        jalov.easyssh.DaggerAppComponent.builder()
                 .application(this)
                 .build()
                 .inject(this);

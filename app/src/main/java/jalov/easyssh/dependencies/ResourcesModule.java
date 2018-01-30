@@ -1,4 +1,4 @@
-package jalov.easyssh;
+package jalov.easyssh.dependencies;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -8,6 +8,8 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import jalov.easyssh.App;
+import jalov.easyssh.main.AppNotification;
 
 /**
  * Created by jalov on 2018-01-22.

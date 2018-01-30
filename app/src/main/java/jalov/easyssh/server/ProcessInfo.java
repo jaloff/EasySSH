@@ -1,4 +1,4 @@
-package jalov.easyssh;
+package jalov.easyssh.server;
 
 /**
  * Created by jalov on 2018-01-16.

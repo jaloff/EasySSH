@@ -6,9 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Optional;
 
-import jalov.easyssh.AppNotification;
-import jalov.easyssh.ProcessInfo;
-import jalov.easyssh.RootManager;
+import jalov.easyssh.main.AppNotification;
+import jalov.easyssh.utils.RootManager;
 
 /**
  * Created by jalov on 2018-01-22.

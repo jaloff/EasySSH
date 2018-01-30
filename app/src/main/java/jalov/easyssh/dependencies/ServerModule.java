@@ -1,11 +1,13 @@
-package jalov.easyssh.server;
+package jalov.easyssh.dependencies;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import jalov.easyssh.AppNotification;
+import jalov.easyssh.main.AppNotification;
+import jalov.easyssh.server.SshServer;
+import jalov.easyssh.server.SshdServer;
 
 /**
  * Created by jalov on 2018-01-22.

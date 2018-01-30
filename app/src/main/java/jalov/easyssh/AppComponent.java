@@ -4,9 +4,11 @@ import javax.inject.Singleton;
 
 import dagger.BindsInstance;
 import dagger.Component;
-import jalov.easyssh.auth.AuthorizedKeysModule;
-import jalov.easyssh.server.ServerModule;
-import jalov.easyssh.settings.SettingsModule;
+import jalov.easyssh.dependencies.AuthorizedKeysModule;
+import jalov.easyssh.dependencies.BuildersModule;
+import jalov.easyssh.dependencies.ResourcesModule;
+import jalov.easyssh.dependencies.ServerModule;
+import jalov.easyssh.dependencies.SettingsModule;
 
 /**
  * Created by jalov on 2018-01-17.

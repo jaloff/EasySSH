@@ -8,7 +8,7 @@ import android.content.res.Resources;
 
 import javax.inject.Singleton;
 
-import jalov.easyssh.StartOnBootReceiver;
+import jalov.easyssh.server.StartOnBootReceiver;
 import jalov.easyssh.R;
 
 /**

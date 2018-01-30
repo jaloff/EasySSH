@@ -1,4 +1,4 @@
-package jalov.easyssh;
+package jalov.easyssh.server;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

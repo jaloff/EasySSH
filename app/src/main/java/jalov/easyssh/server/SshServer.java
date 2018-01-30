@@ -3,8 +3,6 @@ package jalov.easyssh.server;
 import java.util.ArrayList;
 import java.util.List;
 
-import jalov.easyssh.settings.StatusChangeListener;
-
 /**
  * Created by jalov on 2018-01-22.
  */
@@ -34,5 +32,14 @@ public abstract class SshServer {
 
     void notifyListeners() {
         listeners.forEach(l -> l.onStatusChange(isRunning()));
+    }
+
+    /**
+     * Created by jalov on 2018-01-24.
+     */
+
+    @FunctionalInterface
+    public interface StatusChangeListener {
+        void onStatusChange(boolean status);
     }
 }

@@ -1,4 +1,4 @@
-package jalov.easyssh;
+package jalov.easyssh.main;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,17 +14,18 @@ import java.util.Optional;
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
+import jalov.easyssh.utils.NetworkUtils;
+import jalov.easyssh.R;
 import jalov.easyssh.auth.AuthorizedKeysActivity;
 import jalov.easyssh.auth.AuthorizedKeysManager;
 import jalov.easyssh.server.SshServer;
 import jalov.easyssh.settings.Settings;
 import jalov.easyssh.settings.SettingsActivity;
-import jalov.easyssh.settings.StatusChangeListener;
 
 public class MainActivity extends AppCompatActivity {
     final String TAG = this.getClass().getName();
     private FloatingActionButton fab;
-    private StatusChangeListener serverStatusListener = this::updateServerStatus;
+    private SshServer.StatusChangeListener serverStatusListener = this::updateServerStatus;
     @Inject
     Settings settings;
     @Inject

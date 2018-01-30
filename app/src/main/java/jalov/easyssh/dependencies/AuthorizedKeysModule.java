@@ -1,10 +1,11 @@
-package jalov.easyssh.auth;
+package jalov.easyssh.dependencies;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import jalov.easyssh.auth.AuthorizedKeysManager;
 import jalov.easyssh.settings.SshdConfig;
 
 /**

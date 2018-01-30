@@ -1,4 +1,4 @@
-package jalov.easyssh.settings;
+package jalov.easyssh.dependencies;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -11,6 +11,8 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import jalov.easyssh.server.SshServer;
+import jalov.easyssh.settings.Settings;
+import jalov.easyssh.settings.SshdConfig;
 
 /**
  * Created by jalov on 2018-01-17.

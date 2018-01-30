@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".main.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -26,12 +26,12 @@
         <activity
             android:name=".settings.SettingsActivity"
             android:label="@string/action_settings"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".main.MainActivity" />
         <activity android:name=".auth.AuthorizedKeysActivity"
             android:label="@string/action_authorized_keys"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".main.MainActivity"/>
 
-        <receiver android:name=".StartOnBootReceiver"
+        <receiver android:name=".server.StartOnBootReceiver"
             android:enabled="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

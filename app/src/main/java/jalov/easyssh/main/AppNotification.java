@@ -1,9 +1,11 @@
-package jalov.easyssh;
+package jalov.easyssh.main;
 
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.res.Resources;
 import android.support.v4.app.NotificationCompat;
+
+import jalov.easyssh.R;
 
 /**
  * Created by jalov on 2018-01-24.

@@ -1,4 +1,4 @@
-package jalov.easyssh;
+package jalov.easyssh.utils;
 
 import java.io.DataOutputStream;
 import java.io.File;

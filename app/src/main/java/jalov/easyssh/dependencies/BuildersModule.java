@@ -1,8 +1,10 @@
-package jalov.easyssh;
+package jalov.easyssh.dependencies;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
+import jalov.easyssh.server.StartOnBootReceiver;
 import jalov.easyssh.auth.AuthorizedKeysActivity;
+import jalov.easyssh.main.MainActivity;
 import jalov.easyssh.server.SshServerService;
 import jalov.easyssh.settings.SettingsActivity;
 import jalov.easyssh.settings.SettingsFragment;
