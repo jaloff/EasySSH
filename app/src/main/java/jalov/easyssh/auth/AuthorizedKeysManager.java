@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 
 import javax.inject.Singleton;
 
-import jalov.easyssh.utils.RootManager;
 import jalov.easyssh.settings.SshdConfig;
+import jalov.easyssh.utils.RootManager;
 
 /**
  * Created by jalov on 2018-01-17.
@@ -27,7 +27,6 @@ public class AuthorizedKeysManager {
 
     public AuthorizedKeysManager(SshdConfig sshdConfig) {
         this.sshdConfig = sshdConfig;
-        keys = loadAuthorizedKeys();
     }
 
     private List<AuthorizedKey> loadAuthorizedKeys() {
@@ -37,7 +36,6 @@ public class AuthorizedKeysManager {
         if (inputStream.isPresent()) {
             return readAuthorizedKeysFromInputStream(inputStream.get());
         }
-
         return null;
     }
 
@@ -48,6 +46,9 @@ public class AuthorizedKeysManager {
     }
 
     public List<AuthorizedKey> getKeys() {
+        if(keys == null) {  //  Authorized keys lazy loading
+            keys = loadAuthorizedKeys();
+        }
         return keys;
     }
 
