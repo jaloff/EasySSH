@@ -53,12 +53,14 @@ public class AuthorizedKeysActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent resultData) {
         super.onActivityResult(requestCode, resultCode, resultData);
-        Uri uri = resultData.getData();
-        if(requestCode == SELECT_FILE_RC && resultCode == RESULT_OK && uri != null) {
+        if (requestCode == SELECT_FILE_RC && resultCode == RESULT_OK) {
             try {
-                InputStream inputStream = getContentResolver().openInputStream(uri);
-                authorizedKeysManager.addAuthorizedKeysFromInputStream(inputStream);
-                authorizedKeysAdapter.notifyDataSetChanged();
+                Uri uri = resultData.getData();
+                if (uri != null) {
+                    InputStream inputStream = getContentResolver().openInputStream(uri);
+                    authorizedKeysManager.addAuthorizedKeysFromInputStream(inputStream);
+                    authorizedKeysAdapter.notifyDataSetChanged();
+                }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
