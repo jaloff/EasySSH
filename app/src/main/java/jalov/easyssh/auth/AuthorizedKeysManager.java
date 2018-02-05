@@ -1,7 +1,8 @@
 package jalov.easyssh.auth;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -14,6 +15,7 @@ import javax.inject.Singleton;
 
 import jalov.easyssh.settings.SshdConfig;
 import jalov.easyssh.utils.RootManager;
+import jalov.easyssh.utils.Scripts;
 
 /**
  * Created by jalov on 2018-01-17.
@@ -22,27 +24,27 @@ import jalov.easyssh.utils.RootManager;
 @Singleton
 public class AuthorizedKeysManager {
     private final String TAG = this.getClass().getName();
-    private SshdConfig sshdConfig;
     private List<AuthorizedKey> keys;
 
-    public AuthorizedKeysManager(SshdConfig sshdConfig) {
-        this.sshdConfig = sshdConfig;
-    }
+    public AuthorizedKeysManager() {}
 
     private List<AuthorizedKey> loadAuthorizedKeys() {
-        String path = sshdConfig.get("AuthorizedKeysFile");
-        File file = new File(path);
-        Optional<InputStream> inputStream = RootManager.getFileInputStream(file);
+        String path = SshdConfig.AUTHORIZED_KEYS_PATH;
+        Optional<InputStream> inputStream = RootManager.su(Scripts.BEGIN +
+                Scripts.CREATE_AUTHORIZED_KEYS_FILE_IF_NOT_EXIST +
+                Scripts.READ_FILE + path +
+                Scripts.END);
         if (inputStream.isPresent()) {
             return readAuthorizedKeysFromInputStream(inputStream.get());
         }
-        return null;
+        Log.d(TAG, "loadAuthorizedKeys: Keys file loading error");
+        return new ArrayList<>();
     }
 
     private void saveAuthorizedKeys() {
         String fileContent;
         fileContent = keys.stream().map(AuthorizedKey::toString).collect(Collectors.joining("\n"));
-        RootManager.saveFile(sshdConfig.get("AuthorizedKeysFile"), fileContent);
+        RootManager.saveFile(SshdConfig.AUTHORIZED_KEYS_PATH, fileContent);
     }
 
     public List<AuthorizedKey> getKeys() {
@@ -60,11 +62,6 @@ public class AuthorizedKeysManager {
     public void removeAuthorizedKey(int position) {
         keys.remove(position);
         saveAuthorizedKeys();
-    }
-
-    public void createKeysFileIfNotExist() {
-        String path = sshdConfig.get("AuthorizedKeysFile");
-        RootManager.su("touch " + path);
     }
 
     private List<AuthorizedKey> readAuthorizedKeysFromInputStream(InputStream inputStream) {

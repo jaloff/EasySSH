@@ -1,7 +1,6 @@
 package jalov.easyssh.utils;
 
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
@@ -12,36 +11,17 @@ import java.util.Optional;
 
 public class RootManager {
 
-    public static void su(String command) {
-        try {
-            Process ps = Runtime.getRuntime().exec("su");
-            DataOutputStream os = new DataOutputStream(ps.getOutputStream());
-            os.writeBytes(command + "\n");
-            os.writeBytes("exit\n");
-            os.flush();
-            ps.waitFor();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void saveFile(String path, String fileContent) {
-        su("echo '" + fileContent + "' > " +path);
-    }
-
-    public static Optional<InputStream> getFileInputStream(File file) {
+    public static Optional<InputStream> su(String command) {
         Optional<InputStream> inputStream = Optional.empty();
         try {
             Process ps = Runtime.getRuntime().exec("su");
             DataOutputStream os = new DataOutputStream(ps.getOutputStream());
-            os.writeBytes("cat " + file.getAbsolutePath() + "\n");
+            inputStream = Optional.of(ps.getInputStream());
+            os.writeBytes(command + "\n");
             os.writeBytes("exit\n");
             os.flush();
             ps.waitFor();
 
-            inputStream = Optional.of(ps.getInputStream());
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -50,4 +30,9 @@ public class RootManager {
 
         return inputStream;
     }
+
+    public static void saveFile(String path, String fileContent) {
+        su("echo '" + fileContent + "' > " +path);
+    }
+
 }

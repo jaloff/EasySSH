@@ -1,5 +1,7 @@
 package jalov.easyssh.server;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -8,6 +10,7 @@ import java.util.Optional;
 
 import jalov.easyssh.main.AppNotification;
 import jalov.easyssh.utils.RootManager;
+import jalov.easyssh.utils.Scripts;
 
 /**
  * Created by jalov on 2018-01-22.
@@ -29,10 +32,20 @@ public class SshdServer extends SshServer {
     @Override
     public void start() {
         if (!running) {
-            RootManager.su(SSHD_APP_NAME);
-            running = true;
-            appNotification.show();
-            notifyListeners();
+            RootManager.su(Scripts.BEGIN +
+                    Scripts.CREATE_AUTHORIZED_KEYS_FILE_IF_NOT_EXIST +
+                    Scripts.CREATE_SSHD_CONFIG_IF_NOT_EXIST +
+                    Scripts.CREATE_DSA_HOSTKEY_IF_NOT_EXIST +
+                    Scripts.CREATE_RSA_HOSTKEY_IF_NOT_EXIST +
+                    Scripts.RUN_SSHD +
+                    Scripts.END);
+            if(getSshdProcessInfo().isPresent()) {
+                running = true;
+                appNotification.show();
+                notifyListeners();
+            } else {
+                Log.d(TAG, "start: Unable to start SSH server");
+            }
         }
     }
 

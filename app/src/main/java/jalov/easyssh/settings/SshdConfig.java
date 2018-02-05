@@ -3,7 +3,6 @@ package jalov.easyssh.settings;
 import android.util.Log;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -17,8 +16,9 @@ import java.util.stream.Collectors;
 
 import javax.inject.Singleton;
 
-import jalov.easyssh.utils.RootManager;
 import jalov.easyssh.server.SshServer;
+import jalov.easyssh.utils.RootManager;
+import jalov.easyssh.utils.Scripts;
 
 /**
  * Created by jalov on 2018-01-16.
@@ -30,6 +30,7 @@ public class SshdConfig {
     public static final String SSHD_CONFIG_PATH = "/data/ssh/sshd_config";
     public static final String RSA_HOSTKEY_PATH = "/data/ssh/ssh_host_rsa_key";
     public static final String DSA_HOSTKEY_PATH = "/data/ssh/ssh_host_dsa_key";
+    public static final String AUTHORIZED_KEYS_PATH = "/data/ssh/authorized_keys";
     private Map<String,String> settings;
     private List<String> hostKeys;
     private SshServer server;
@@ -42,8 +43,10 @@ public class SshdConfig {
     public void load() {
         settings = new HashMap<>();
         hostKeys = new ArrayList<>();
-        File sshdConfigFile = new File(SSHD_CONFIG_PATH);
-        Optional<InputStream> inputStream = RootManager.getFileInputStream(sshdConfigFile);
+        Optional<InputStream> inputStream = RootManager.su(Scripts.BEGIN +
+                Scripts.CREATE_SSHD_CONFIG_IF_NOT_EXIST +
+                Scripts.READ_FILE + SSHD_CONFIG_PATH +
+                Scripts.END);
         if(inputStream.isPresent()) {
             // Load config from file
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream.get()))) {
@@ -65,10 +68,7 @@ public class SshdConfig {
                 e.printStackTrace();
             }
         } else {
-            // Create new config file
-            Log.d(TAG, "Creating new file");
-            addMissingConfiguration(settings);
-            save();
+            Log.d(TAG, "Sshd config loading Error");
         }
     }
 

@@ -14,13 +14,12 @@ import java.util.Optional;
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
-import jalov.easyssh.utils.NetworkUtils;
 import jalov.easyssh.R;
 import jalov.easyssh.auth.AuthorizedKeysActivity;
-import jalov.easyssh.auth.AuthorizedKeysManager;
 import jalov.easyssh.server.SshServer;
 import jalov.easyssh.settings.Settings;
 import jalov.easyssh.settings.SettingsActivity;
+import jalov.easyssh.utils.NetworkUtils;
 
 public class MainActivity extends AppCompatActivity {
     final String TAG = this.getClass().getName();
@@ -30,8 +29,6 @@ public class MainActivity extends AppCompatActivity {
     Settings settings;
     @Inject
     SshServer server;
-    @Inject
-    AuthorizedKeysManager authorizedKeysManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +43,7 @@ public class MainActivity extends AppCompatActivity {
         fab = findViewById(R.id.fab);
         fab.setOnClickListener(v -> toggleSSH());
 
-        authorizedKeysManager.createKeysFileIfNotExist();
-
-        if(settings.runOnAppStart()) {
+        if (settings.runOnAppStart()) {
             server.start();
         }
 
@@ -84,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void toggleSSH() {
-        if(server.isRunning()) {
+        if (server.isRunning()) {
             server.stop();
         } else {
             server.start();
@@ -94,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
     public void updateServerStatus(boolean status) {
         TextView statusTv = findViewById(R.id.tv_status);
         String statusText = "Stopped";
-        if(status) {
+        if (status) {
             statusText = "Running";
             fab.setImageResource(android.R.drawable.ic_media_pause);
         } else {
@@ -106,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         TextView portTv = findViewById(R.id.tv_port);
         String ipText = "";
         String portText = "";
-        if(status) {
+        if (status) {
             Optional<String> ipAddress = NetworkUtils.getIPAdress();
             ipText = ipAddress.isPresent() ? ipAddress.get() : getResources().getString(R.string.no_ip_address);
             portText = settings.getPort();
