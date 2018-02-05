@@ -2,10 +2,8 @@ package jalov.easyssh.server;
 
 import android.util.Log;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.util.Optional;
 
 import jalov.easyssh.main.AppNotification;
@@ -26,7 +24,7 @@ public class SshdServer extends SshServer {
     public SshdServer(AppNotification appNotification) {
         super();
         this.appNotification = appNotification;
-        this.running = getSshdProcessInfo().isPresent();
+        this.running = isSshdProcessRunning();
     }
 
     @Override
@@ -39,7 +37,7 @@ public class SshdServer extends SshServer {
                     Scripts.CREATE_RSA_HOSTKEY_IF_NOT_EXIST +
                     Scripts.RUN_SSHD +
                     Scripts.END);
-            if(getSshdProcessInfo().isPresent()) {
+            if (isSshdProcessRunning()) {
                 running = true;
                 appNotification.show();
                 notifyListeners();
@@ -64,30 +62,16 @@ public class SshdServer extends SshServer {
         return running;
     }
 
-    private Optional<ProcessInfo> getSshdProcessInfo() {
-        Optional<ProcessInfo> processInfo = Optional.empty();
+    private boolean isSshdProcessRunning() {
         try {
-            Process su = Runtime.getRuntime().exec("su");
-            DataOutputStream dos = new DataOutputStream(su.getOutputStream());
-            BufferedReader reader = new BufferedReader(new InputStreamReader(su.getInputStream()));
-
-            dos.writeBytes("ps | grep " + SSHD_APP_NAME + "\n");
-            dos.writeBytes("exit\n");
-            dos.flush();
-            su.waitFor();
-
-            if (reader.ready()) {
-                String line = reader.readLine();
-                String[] cols = line.split("\\s+");
-                processInfo = Optional.of(new ProcessInfo(cols[0], cols[1], cols[8]));
+            Optional<InputStream> inputStream = RootManager.su("ps | grep " + SSHD_APP_NAME);
+            if (inputStream.isPresent()) {
+                return inputStream.get().available() > 0;
             }
-
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        return processInfo;
+        return false;
     }
 }
