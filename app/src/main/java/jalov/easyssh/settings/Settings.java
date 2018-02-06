@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import jalov.easyssh.server.StartOnBootReceiver;
@@ -25,6 +26,7 @@ public class Settings {
     private String runOnBootKey;
     private final String PID_FILEPATH_KEY = "PidFile";
 
+    @Inject
     public Settings(SharedPreferences sharedPreferences, Resources resources, Context context) {
         this.sharedPreferences = sharedPreferences;
         this.context = context;

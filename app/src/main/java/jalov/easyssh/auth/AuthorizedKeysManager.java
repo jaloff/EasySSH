@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import jalov.easyssh.settings.SshdConfig;
@@ -26,6 +27,7 @@ public class AuthorizedKeysManager {
     private final String TAG = this.getClass().getName();
     private List<AuthorizedKey> keys;
 
+    @Inject
     public AuthorizedKeysManager() {}
 
     private List<AuthorizedKey> loadAuthorizedKeys() {

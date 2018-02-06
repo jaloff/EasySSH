@@ -4,7 +4,6 @@ import javax.inject.Singleton;
 
 import dagger.BindsInstance;
 import dagger.Component;
-import jalov.easyssh.dependencies.AuthorizedKeysModule;
 import jalov.easyssh.dependencies.BuildersModule;
 import jalov.easyssh.dependencies.ResourcesModule;
 import jalov.easyssh.dependencies.ServerModule;
@@ -15,7 +14,7 @@ import jalov.easyssh.dependencies.SettingsModule;
  */
 
 @Singleton
-@Component(modules = {SettingsModule.class, AuthorizedKeysModule.class, ResourcesModule.class, ServerModule.class, BuildersModule.class})
+@Component(modules = {SettingsModule.class, ResourcesModule.class, ServerModule.class, BuildersModule.class})
 public interface AppComponent {
     @Component.Builder
     interface Builder {
