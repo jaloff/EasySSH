@@ -7,7 +7,7 @@ import java.io.InputStream;
 import java.util.Optional;
 
 import jalov.easyssh.main.AppNotification;
-import jalov.easyssh.settings.Settings;
+import jalov.easyssh.settings.SshdConfig;
 import jalov.easyssh.utils.RootManager;
 import jalov.easyssh.utils.Scripts;
 
@@ -21,28 +21,24 @@ public class SshdServer extends SshServer {
     private final String STOP_SSH = "pkill -f " + SSHD_APP_NAME + "*";
     private boolean running;
     private AppNotification appNotification;
-    private Settings settings;
+    private SshdConfig sshdConfig;
 
-    public SshdServer(AppNotification appNotification, Settings settings) {
+    public SshdServer(AppNotification appNotification, SshdConfig sshdConfig) {
         super();
+        this.sshdConfig = sshdConfig;
         this.appNotification = appNotification;
-        this.settings = settings;
         this.running = isSshdProcessRunning();
     }
 
     @Override
     public void start() {
         if (!running) {
-            StringBuilder runScript = new StringBuilder(Scripts.RUN_SSHD).append(" -p ").append(settings.getPort());
-            if (settings.isSftpEnabled()) {
-                runScript.append(" -o Subsystem=\"sftp internal-sftp\"");
-            }
             RootManager.su(Scripts.BEGIN +
                     Scripts.CREATE_AUTHORIZED_KEYS_FILE_IF_NOT_EXIST +
                     Scripts.CREATE_SSHD_CONFIG_IF_NOT_EXIST +
                     Scripts.CREATE_DSA_HOSTKEY_IF_NOT_EXIST +
                     Scripts.CREATE_RSA_HOSTKEY_IF_NOT_EXIST +
-                    runScript +
+                    Scripts.RUN_SSHD + sshdConfig.getSshdOptions() +
                     Scripts.END);
             if (isSshdProcessRunning()) {
                 running = true;
