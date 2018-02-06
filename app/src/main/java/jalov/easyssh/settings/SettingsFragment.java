@@ -30,11 +30,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         ValidatedEditTextPreference portPreference = (ValidatedEditTextPreference) findPreference(portKey);
         String portErrorMessage = getResources().getString(R.string.port_validation_error_text);
         portPreference.addValidator(new Validator<>(s -> s.matches("^[1-9][\\d]{0,4}$"), portErrorMessage));
-        portPreference.setOnPreferenceChangeListener((preference, o) -> {
-            String port = o.toString();
-            settings.setPort(port);
-            return true;
-        });
 
         // SFTP preference
         String sftpKey = settings.getSftpKey();

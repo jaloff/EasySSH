@@ -10,9 +10,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import jalov.easyssh.server.SshServer;
 import jalov.easyssh.settings.Settings;
-import jalov.easyssh.settings.SshdConfig;
 
 /**
  * Created by jalov on 2018-01-17.
@@ -23,15 +21,9 @@ public class SettingsModule {
 
     @Provides
     @Singleton
-    static SshdConfig provideSshdConfig(SshServer server) {
-        return new SshdConfig(server);
-    }
-
-    @Provides
-    @Singleton
     @Inject
-    Settings provideSettings(SshdConfig sshdConfig, SharedPreferences sharedPreferences, Resources resources, Context context) {
-        return new Settings(sshdConfig, sharedPreferences, resources, context);
+    Settings provideSettings(SharedPreferences sharedPreferences, Resources resources, Context context) {
+        return new Settings(sharedPreferences, resources, context);
     }
 
     @Provides

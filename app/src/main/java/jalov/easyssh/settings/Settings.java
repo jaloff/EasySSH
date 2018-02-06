@@ -17,7 +17,6 @@ import jalov.easyssh.R;
 
 @Singleton
 public class Settings {
-    private SshdConfig sshdConfig;
     private SharedPreferences sharedPreferences;
     private Context context;
     private String portKey;
@@ -26,8 +25,7 @@ public class Settings {
     private String runOnBootKey;
     private final String PID_FILEPATH_KEY = "PidFile";
 
-    public Settings(SshdConfig sshdConfig, SharedPreferences sharedPreferences, Resources resources, Context context) {
-        this.sshdConfig = sshdConfig;
+    public Settings(SharedPreferences sharedPreferences, Resources resources, Context context) {
         this.sharedPreferences = sharedPreferences;
         this.context = context;
         this.portKey = resources.getString(R.string.port_key);
@@ -37,11 +35,11 @@ public class Settings {
     }
 
     public void enableSftp() {
-        sshdConfig.addOrUpdate("Subsystem", "sftp internal-sftp");
+        sharedPreferences.edit().putBoolean(sftpKey, true).apply();
     }
 
     public void disableSftp() {
-        sshdConfig.remove("Subsystem");
+        sharedPreferences.edit().putBoolean(sftpKey, false).apply();
     }
 
     public void setRunOnBoot(boolean runOnBoot) {
@@ -51,16 +49,16 @@ public class Settings {
         packageManager.setComponentEnabledSetting(component, state, PackageManager.DONT_KILL_APP);
     }
 
-    public void setPort(String port) {
-        sshdConfig.addOrUpdate(portKey, port);
-    }
-
     public String getPort() {
-        return sshdConfig.get(portKey);
+        return sharedPreferences.getString(portKey, "22");
     }
 
     public boolean runOnAppStart() {
         return sharedPreferences.getBoolean(runOnAppStartKey, false);
+    }
+
+    public boolean isSftpEnabled() {
+        return sharedPreferences.getBoolean(sftpKey, false);
     }
 
     public String getPortKey() {
@@ -79,7 +77,4 @@ public class Settings {
         return runOnBootKey;
     }
 
-    public String getSshPidFilePath() {
-        return sshdConfig.get(PID_FILEPATH_KEY);
-    }
 }

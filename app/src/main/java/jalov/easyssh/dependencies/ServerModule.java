@@ -8,6 +8,7 @@ import dagger.Provides;
 import jalov.easyssh.main.AppNotification;
 import jalov.easyssh.server.SshServer;
 import jalov.easyssh.server.SshdServer;
+import jalov.easyssh.settings.Settings;
 
 /**
  * Created by jalov on 2018-01-22.
@@ -19,7 +20,7 @@ public class ServerModule {
     @Provides
     @Singleton
     @Inject
-    SshServer providesSshServer(AppNotification appNotification) {
-        return new SshdServer(appNotification);
+    SshServer providesSshServer(AppNotification appNotification, Settings settings) {
+        return new SshdServer(appNotification, settings);
     }
 }

@@ -47,7 +47,7 @@ public class ValidatedEditTextPreference extends EditTextPreference {
     }
 
     private boolean onPreferenceChange(Preference preference, Object newValue) {
-        if(listener.onPreferenceChange(preference, newValue)) {
+        if(listener == null || listener.onPreferenceChange(preference, newValue)) {
             setSummary(newValue.toString());
             return true;
         }
