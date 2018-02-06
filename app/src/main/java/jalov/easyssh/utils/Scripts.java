@@ -12,8 +12,9 @@ public class Scripts {
     static final String FI = "fi;";
     static final String IF_CONDITION_END = " ];";
     public static final String BEGIN = "sh -c '";
-    public static final String END = ";'";
+    public static final String END = "'";
     public static final String READ_FILE = "cat ";
+    public static final String FIND_PROCESS = "ps | grep ";
     public static final String KEYGEN_PATH = "/system/bin/ssh-keygen";
     public static final String PUB_KEY_SUFFIX = ".pub";
     public static final String CREATE_AUTHORIZED_KEYS_FILE_IF_NOT_EXIST

@@ -16,7 +16,7 @@ import javax.inject.Singleton;
 
 import jalov.easyssh.settings.SshdConfig;
 import jalov.easyssh.utils.RootManager;
-import jalov.easyssh.utils.Scripts;
+import jalov.easyssh.utils.ScriptBuilder;
 
 /**
  * Created by jalov on 2018-01-17.
@@ -31,11 +31,12 @@ public class AuthorizedKeysManager {
     public AuthorizedKeysManager() {}
 
     private List<AuthorizedKey> loadAuthorizedKeys() {
-        String path = SshdConfig.AUTHORIZED_KEYS_PATH;
-        Optional<InputStream> inputStream = RootManager.su(Scripts.BEGIN +
-                Scripts.CREATE_AUTHORIZED_KEYS_FILE_IF_NOT_EXIST +
-                Scripts.READ_FILE + path +
-                Scripts.END);
+        String script = new ScriptBuilder()
+                .createAuthorizedKeysFileIfNotExist()
+                .readFile(SshdConfig.AUTHORIZED_KEYS_PATH)
+                .build();
+
+        Optional<InputStream> inputStream = RootManager.su(script);
         if (inputStream.isPresent()) {
             return readAuthorizedKeysFromInputStream(inputStream.get());
         }

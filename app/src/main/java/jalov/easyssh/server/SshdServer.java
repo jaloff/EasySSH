@@ -9,16 +9,15 @@ import java.util.Optional;
 import jalov.easyssh.main.AppNotification;
 import jalov.easyssh.settings.SshdConfig;
 import jalov.easyssh.utils.RootManager;
-import jalov.easyssh.utils.Scripts;
+import jalov.easyssh.utils.ScriptBuilder;
 
 /**
  * Created by jalov on 2018-01-22.
  */
 
 public class SshdServer extends SshServer {
-    final String TAG = this.getClass().getName();
+    private final String TAG = this.getClass().getName();
     public static final String SSHD_APP_NAME = "/system/bin/sshd";
-    private final String STOP_SSH = "pkill -f " + SSHD_APP_NAME + "*";
     private boolean running;
     private AppNotification appNotification;
     private SshdConfig sshdConfig;
@@ -33,19 +32,26 @@ public class SshdServer extends SshServer {
     @Override
     public void start() {
         if (!running) {
-            RootManager.su(Scripts.BEGIN +
-                    Scripts.CREATE_AUTHORIZED_KEYS_FILE_IF_NOT_EXIST +
-                    Scripts.CREATE_SSHD_CONFIG_IF_NOT_EXIST +
-                    Scripts.CREATE_DSA_HOSTKEY_IF_NOT_EXIST +
-                    Scripts.CREATE_RSA_HOSTKEY_IF_NOT_EXIST +
-                    Scripts.RUN_SSHD + sshdConfig.getSshdOptions() +
-                    Scripts.END);
-            if (isSshdProcessRunning()) {
-                running = true;
-                appNotification.show();
-                notifyListeners();
-            } else {
-                Log.d(TAG, "start: Unable to start SSH server");
+            String startScript = new ScriptBuilder()
+                    .createDsaHostkeyIfNotExist()
+                    .createRsaHostkeyIfNotExist()
+                    .createSshdConfigIfNotExist()
+                    .createAuthorizedKeysFileIfNotExist()
+                    .runSshd(sshdConfig.getSshdOptions())
+                    .findProcess(SSHD_APP_NAME)
+                    .build();
+
+            Optional<InputStream> inputStream = RootManager.su(startScript);
+            try {
+                if (inputStream.isPresent() && inputStream.get().available() > 0) {
+                    running = true;
+                    appNotification.show();
+                    notifyListeners();
+                } else {
+                    Log.d(TAG, "start: Unable to start SSH server");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -53,10 +59,22 @@ public class SshdServer extends SshServer {
     @Override
     public void stop() {
         if (running) {
-            RootManager.su(STOP_SSH);
-            running = false;
-            appNotification.hide();
-            notifyListeners();
+            String stopScript = new ScriptBuilder()
+                    .killProcess(SSHD_APP_NAME)
+                    .findProcess(SSHD_APP_NAME)
+                    .build();
+            Optional<InputStream> inputStream = RootManager.su(stopScript);
+            try {
+                if(inputStream.isPresent() && inputStream.get().available() == 0) {
+                    running = false;
+                    appNotification.hide();
+                    notifyListeners();
+                } else {
+                    Log.d(TAG, "stop: Unable to stop SSH server");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -67,7 +85,10 @@ public class SshdServer extends SshServer {
 
     private boolean isSshdProcessRunning() {
         try {
-            Optional<InputStream> inputStream = RootManager.su("ps | grep " + SSHD_APP_NAME);
+            String script = new ScriptBuilder()
+                    .findProcess(SSHD_APP_NAME)
+                    .build();
+            Optional<InputStream> inputStream = RootManager.su(script);
             if (inputStream.isPresent()) {
                 return inputStream.get().available() > 0;
             }
