@@ -16,8 +16,10 @@ public abstract class SshServer {
     public abstract boolean isRunning();
 
     public void restart() {
-        stop();
-        start();
+        if(isRunning()) {
+            stop();
+            start();
+        }
     }
 
     public StatusChangeListener addOnStatusChangeListener(StatusChangeListener listener) {
