@@ -36,7 +36,7 @@ public class AuthorizedKeysManager {
                 .readFile(SshdConfig.AUTHORIZED_KEYS_PATH)
                 .build();
 
-        Optional<InputStream> inputStream = RootManager.su(script);
+        Optional<InputStream> inputStream = RootManager.run(script);
         if (inputStream.isPresent()) {
             return readAuthorizedKeysFromInputStream(inputStream.get());
         }

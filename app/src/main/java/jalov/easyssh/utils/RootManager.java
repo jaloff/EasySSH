@@ -11,16 +11,30 @@ import java.util.Optional;
 
 public class RootManager {
 
-    public static Optional<InputStream> su(String command) {
+    public static Optional<InputStream> run(String command) {
+        return execute(command, true);
+    }
+
+    public static Optional<InputStream> runAsync(String command) {
+        return execute(command, false);
+    }
+
+    public static void saveFile(String path, String fileContent) {
+        run("echo '" + fileContent + "' > " +path);
+    }
+
+    private static Optional<InputStream> execute(String command, boolean waitForExecution) {
         Optional<InputStream> inputStream = Optional.empty();
         try {
             Process ps = Runtime.getRuntime().exec("su");
             DataOutputStream os = new DataOutputStream(ps.getOutputStream());
-            inputStream = Optional.of(ps.getInputStream());
             os.writeBytes(command + "\n");
             os.writeBytes("exit\n");
             os.flush();
-            ps.waitFor();
+            inputStream = Optional.of(ps.getInputStream());
+            if (waitForExecution) {
+                ps.waitFor();
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -30,9 +44,4 @@ public class RootManager {
 
         return inputStream;
     }
-
-    public static void saveFile(String path, String fileContent) {
-        su("echo '" + fileContent + "' > " +path);
-    }
-
 }

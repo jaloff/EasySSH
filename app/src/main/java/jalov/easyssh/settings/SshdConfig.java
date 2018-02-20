@@ -36,7 +36,7 @@ public class SshdConfig {
 
         return options.stream()
                 .map(o -> String.format(OPTION_TEMPLATE, o.key, o.value))
-                .collect(Collectors.joining());
+                .collect(Collectors.joining("", "", " -e -D "));
     }
 
     private class Option {

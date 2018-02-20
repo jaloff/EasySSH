@@ -2,12 +2,15 @@ package jalov.easyssh.server;
 
 import android.util.Log;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Optional;
 
 import jalov.easyssh.main.AppNotification;
 import jalov.easyssh.settings.SshdConfig;
+import jalov.easyssh.utils.ProcessUtils;
 import jalov.easyssh.utils.RootManager;
 import jalov.easyssh.utils.ScriptBuilder;
 
@@ -41,17 +44,23 @@ public class SshdServer extends SshServer {
                     .findProcess(SSHD_APP_NAME)
                     .build();
 
-            Optional<InputStream> inputStream = RootManager.su(startScript);
-            try {
-                if (inputStream.isPresent() && inputStream.get().available() > 0) {
-                    running = true;
-                    appNotification.show();
-                    notifyListeners();
-                } else {
-                    Log.d(TAG, "start: Unable to start SSH server");
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            Optional<InputStream> inputStream = RootManager.runAsync(startScript);
+            if(inputStream.isPresent()) {   // Handle ssh process logs
+                new Thread(() -> {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream.get()));
+                    String line;
+                    try {
+                        while((line = reader.readLine()) != null){
+                            Log.d(TAG, "start: " + line);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }).start();
+
+                running = true;
+                appNotification.show();
+                notifyListeners();
             }
         }
     }
@@ -63,7 +72,7 @@ public class SshdServer extends SshServer {
                     .killProcess(SSHD_APP_NAME)
                     .findProcess(SSHD_APP_NAME)
                     .build();
-            Optional<InputStream> inputStream = RootManager.su(stopScript);
+            Optional<InputStream> inputStream = RootManager.run(stopScript);
             try {
                 if(inputStream.isPresent() && inputStream.get().available() == 0) {
                     running = false;
@@ -84,18 +93,6 @@ public class SshdServer extends SshServer {
     }
 
     private boolean isSshdProcessRunning() {
-        try {
-            String script = new ScriptBuilder()
-                    .findProcess(SSHD_APP_NAME)
-                    .build();
-            Optional<InputStream> inputStream = RootManager.su(script);
-            if (inputStream.isPresent()) {
-                return inputStream.get().available() > 0;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return false;
+        return ProcessUtils.isProcessRunning(SSHD_APP_NAME);
     }
 }

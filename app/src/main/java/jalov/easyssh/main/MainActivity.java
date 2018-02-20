@@ -24,7 +24,7 @@ import jalov.easyssh.utils.NetworkUtils;
 public class MainActivity extends AppCompatActivity {
     final String TAG = this.getClass().getName();
     private FloatingActionButton fab;
-    private SshServer.StatusChangeListener serverStatusListener = this::updateServerStatus;
+    private SshServer.StatusChangeListener serverStatusListener;
     @Inject
     Settings settings;
     @Inject
@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
             server.start();
         }
 
+        serverStatusListener = this::updateServerStatus;
         server.addOnStatusChangeListener(serverStatusListener);
     }
 

@@ -11,6 +11,7 @@ public class Scripts {
     static final String IF = "if [ ! -f ";
     static final String FI = "fi;";
     static final String IF_CONDITION_END = " ];";
+    static final String STDERR_TO_STDOUT = " 2>&1";
     public static final String BEGIN = "sh -c '";
     public static final String END = "'";
     public static final String READ_FILE = "cat ";
@@ -44,7 +45,8 @@ public class Scripts {
             " -h " + SshdConfig.DSA_HOSTKEY_PATH +
             " -h " + SshdConfig.RSA_HOSTKEY_PATH +
             " -o AuthorizedKeysFile=" + SshdConfig.AUTHORIZED_KEYS_PATH +
-            " -o PasswordAuthentication=no";
+            " -o PasswordAuthentication=no" +
+            STDERR_TO_STDOUT;
 
     private Scripts(){}
 }
