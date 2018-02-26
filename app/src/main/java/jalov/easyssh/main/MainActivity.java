@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.Optional;
@@ -19,6 +21,7 @@ import jalov.easyssh.auth.AuthorizedKeysActivity;
 import jalov.easyssh.server.SshServer;
 import jalov.easyssh.settings.Settings;
 import jalov.easyssh.settings.SettingsActivity;
+import jalov.easyssh.utils.Logger;
 import jalov.easyssh.utils.NetworkUtils;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     Settings settings;
     @Inject
     SshServer server;
+    @Inject
+    Logger logger;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +51,12 @@ public class MainActivity extends AppCompatActivity {
         if (settings.runOnAppStart()) {
             server.start();
         }
+
+        // Logging view
+        ListView lw = findViewById(R.id.lv_logs);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, logger.getLogs());
+        logger.setAdapter(adapter);
+        lw.setAdapter(adapter);
 
         serverStatusListener = this::updateServerStatus;
         server.addOnStatusChangeListener(serverStatusListener);

@@ -2,14 +2,13 @@ package jalov.easyssh.server;
 
 import android.util.Log;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Optional;
 
 import jalov.easyssh.main.AppNotification;
 import jalov.easyssh.settings.SshdConfig;
+import jalov.easyssh.utils.Logger;
 import jalov.easyssh.utils.ProcessUtils;
 import jalov.easyssh.utils.RootManager;
 import jalov.easyssh.utils.ScriptBuilder;
@@ -24,10 +23,12 @@ public class SshdServer extends SshServer {
     private boolean running;
     private AppNotification appNotification;
     private SshdConfig sshdConfig;
+    private Logger logger;
 
-    public SshdServer(AppNotification appNotification, SshdConfig sshdConfig) {
+    public SshdServer(AppNotification appNotification, SshdConfig sshdConfig, Logger logger) {
         super();
         this.sshdConfig = sshdConfig;
+        this.logger = logger;
         this.appNotification = appNotification;
         this.running = isSshdProcessRunning();
     }
@@ -45,22 +46,12 @@ public class SshdServer extends SshServer {
                     .build();
 
             Optional<InputStream> inputStream = RootManager.runAsync(startScript);
-            if(inputStream.isPresent()) {   // Handle ssh process logs
-                new Thread(() -> {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream.get()));
-                    String line;
-                    try {
-                        while((line = reader.readLine()) != null){
-                            Log.d(TAG, "start: " + line);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }).start();
-
-                running = true;
-                appNotification.show();
-                notifyListeners();
+            if (inputStream.isPresent()) {
+                running = logger.registerSshServerInputStream(inputStream.get()); // Handle ssh process logs
+                if (running) {
+                    appNotification.show();
+                    notifyListeners();
+                }
             }
         }
     }
@@ -74,7 +65,7 @@ public class SshdServer extends SshServer {
                     .build();
             Optional<InputStream> inputStream = RootManager.run(stopScript);
             try {
-                if(inputStream.isPresent() && inputStream.get().available() == 0) {
+                if (inputStream.isPresent() && inputStream.get().available() == 0) {
                     running = false;
                     appNotification.hide();
                     notifyListeners();
