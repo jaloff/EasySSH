@@ -1,17 +1,28 @@
 package jalov.easyssh.utils;
 
+import android.os.Looper;
+import android.widget.BaseAdapter;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
  * Created by jalov on 2018-02-26.
  */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({Looper.class, Logger.class})
 public class LoggerTest {
     private final String FIRST_LOG = "First log";
     private final String SECOND_LOG = "Second log";
@@ -26,14 +37,15 @@ public class LoggerTest {
 
     @Test
     public void shouldAddMessageToLogList() throws Exception {
+        AndroidMockUtil.mockMainThreadHandler();
         assertEquals(0, logger.getLogs().size());
-//        BaseAdapter adapter = mock(BaseAdapter.class);
+        BaseAdapter adapter = mock(BaseAdapter.class);
 
-//        logger.setAdapter(adapter);
+        logger.setAdapter(adapter);
         logger.log(FIRST_LOG);
 
         assertEquals(1, logger.getLogs().size());
-//        verify(adapter, times(1)).notifyDataSetChanged();
+        verify(adapter, times(1)).notifyDataSetChanged();
     }
 
     @Test
