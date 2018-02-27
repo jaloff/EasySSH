@@ -17,7 +17,7 @@ public class NetworkUtils {
 
     private NetworkUtils(){}
 
-    public static Optional<String> getIPAdress() {
+    public static Optional<String> getIPAddress() {
         Optional<String> wlan;
         Optional<String> rmnet = Optional.empty();
         try {

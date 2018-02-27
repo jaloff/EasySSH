@@ -2,6 +2,7 @@
     <string name="app_name">Easy SSH</string>
     <string name="action_settings">Settings</string>
     <string name="action_authorized_keys">Authorized Keys</string>
+    <string name="log_title">Log</string>
 
     <string name="login">root</string>
     <string name="server_address_label">Server address:</string>

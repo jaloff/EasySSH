@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         String ipText = "";
         String portText = "";
         if (status) {
-            Optional<String> ipAddress = NetworkUtils.getIPAdress();
+            Optional<String> ipAddress = NetworkUtils.getIPAddress();
             ipText = ipAddress.isPresent() ? ipAddress.get() : getResources().getString(R.string.no_ip_address);
             portText = settings.getPort();
         }
