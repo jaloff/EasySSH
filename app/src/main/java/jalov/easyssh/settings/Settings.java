@@ -24,6 +24,7 @@ public class Settings {
     private String runOnAppStartKey;
     private String sftpKey;
     private String runOnBootKey;
+    private String darkThemeKey;
     private final String PID_FILEPATH_KEY = "PidFile";
 
     @Inject
@@ -34,6 +35,7 @@ public class Settings {
         this.runOnAppStartKey = resources.getString(R.string.run_on_app_start_key);
         this.sftpKey = resources.getString(R.string.sftp_key);
         this.runOnBootKey = resources.getString(R.string.run_on_boot_key);
+        this.darkThemeKey = resources.getString(R.string.dark_theme_key);
     }
 
     public void enableSftp() {
@@ -79,4 +81,11 @@ public class Settings {
         return runOnBootKey;
     }
 
+    public boolean isDarkThemeEnabled() {
+        return sharedPreferences.getBoolean(darkThemeKey, false);
+    }
+
+    public String getDarkThemeKey() {
+        return darkThemeKey;
+    }
 }

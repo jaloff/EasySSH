@@ -36,10 +36,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         String portErrorMessage = getResources().getString(R.string.port_validation_error_text);
         portPreference.addValidator(new Validator<>(s -> s.matches("^[1-9][\\d]{0,4}$"), portErrorMessage));
 
-        // SFTP preference
-        String sftpKey = settings.getSftpKey();
-        SwitchPreference sftpPreference = (SwitchPreference) findPreference(sftpKey);
-
         // Run on boot preference
         String runOnBootKey = settings.getRunOnBootKey();
         SwitchPreference runOnBootPreference = (SwitchPreference) findPreference(runOnBootKey);
@@ -73,10 +69,18 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     }
 
     @Override
+    public void onDetach() {
+        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+        super.onDetach();
+    }
+
+    @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         // Restart server on config change
         if(key.compareTo(settings.getPortKey()) == 0 || key.compareTo(settings.getSftpKey()) == 0) {
             server.restart();
+        } else if(getActivity() != null && key.compareTo(settings.getDarkThemeKey()) == 0) {
+            getActivity().recreate();
         }
     }
 }

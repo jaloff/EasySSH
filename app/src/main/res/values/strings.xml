@@ -14,6 +14,7 @@
     <string name="run_on_app_start_text">Run SSH on App Start</string>
     <string name="sftp_text">Enable SFTP</string>
     <string name="run_on_boot_text">Run on boot</string>
+    <string name="dark_theme_text">Dark theme</string>
 
     <string name="notification_title">SSH Server</string>
     <string name="notification_text">Running</string>
@@ -22,4 +23,5 @@
     <string name="sftp_key">sftp</string>
     <string name="run_on_app_start_key">run_on_app_start</string>
     <string name="run_on_boot_key">run_on_boot</string>
+    <string name="dark_theme_key">dark_theme</string>
 </resources>

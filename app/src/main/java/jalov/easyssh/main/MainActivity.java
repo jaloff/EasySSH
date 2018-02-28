@@ -3,7 +3,6 @@ package jalov.easyssh.main;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,17 +18,14 @@ import dagger.android.AndroidInjection;
 import jalov.easyssh.R;
 import jalov.easyssh.auth.AuthorizedKeysActivity;
 import jalov.easyssh.server.SshServer;
-import jalov.easyssh.settings.Settings;
 import jalov.easyssh.settings.SettingsActivity;
 import jalov.easyssh.utils.Logger;
 import jalov.easyssh.utils.NetworkUtils;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     final String TAG = this.getClass().getName();
     private FloatingActionButton fab;
     private SshServer.StatusChangeListener serverStatusListener;
-    @Inject
-    Settings settings;
     @Inject
     SshServer server;
     @Inject
@@ -39,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = findViewById(R.id.toolbar);

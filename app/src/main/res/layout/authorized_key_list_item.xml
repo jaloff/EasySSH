@@ -28,6 +28,6 @@
         android:layout_height="32dp"
         android:layout_gravity="start"
         android:drawableEnd="@android:drawable/ic_menu_delete"
-        android:background="@color/colorWhite"/>
+        android:background="@color/colorTransparent"/>
 
 </android.support.v7.widget.LinearLayoutCompat>

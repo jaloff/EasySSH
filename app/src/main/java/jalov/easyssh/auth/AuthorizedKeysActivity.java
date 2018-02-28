@@ -3,7 +3,6 @@ package jalov.easyssh.auth;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
@@ -15,8 +14,9 @@ import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
 import jalov.easyssh.R;
+import jalov.easyssh.main.BaseActivity;
 
-public class AuthorizedKeysActivity extends AppCompatActivity {
+public class AuthorizedKeysActivity extends BaseActivity {
     private final String TAG = this.getClass().getName();
     static final int SELECT_FILE_RC = 10;
     private AuthorizedKeysAdapter authorizedKeysAdapter;

@@ -3,7 +3,6 @@ package jalov.easyssh.settings;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 
 import javax.inject.Inject;
 
@@ -12,12 +11,13 @@ import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 import jalov.easyssh.R;
+import jalov.easyssh.main.BaseActivity;
 
 /**
  * Created by jalov on 2018-01-16.
  */
 
-public class SettingsActivity extends AppCompatActivity implements HasSupportFragmentInjector {
+public class SettingsActivity extends BaseActivity implements HasSupportFragmentInjector {
     @Inject
     DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
 
