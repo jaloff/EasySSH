@@ -5,7 +5,7 @@ package jalov.easyssh.auth;
  */
 
 public enum KeyType {
-    RSA("ssh-rsa"), DSA("ssh-dss");
+    RSA("ssh-rsa"), DSA("ssh-dsa");
 
     private String string;
 

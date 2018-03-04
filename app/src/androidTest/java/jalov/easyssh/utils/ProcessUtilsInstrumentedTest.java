@@ -16,8 +16,8 @@ import static org.junit.Assert.assertTrue;
  */
 @RunWith(AndroidJUnit4.class)
 public class ProcessUtilsInstrumentedTest {
-    private final String NON_EXISTENT_PROCESS_NAME = "Random&#^7*(AppNAME139-9963@$!7854";
-    private final String ALWAYS_RUNNING_PROCESS = BuildConfig.APPLICATION_ID; // This application package name
+    public static final String NON_EXISTENT_PROCESS_NAME = "Random&#^7*(AppNAME139-9963@$!7854";
+    public static final String ALWAYS_RUNNING_PROCESS = BuildConfig.APPLICATION_ID; // This application package name
 
     @Test
     public void isProcessRunningShouldReturnTrueIfProcessIsRunning() throws Exception {

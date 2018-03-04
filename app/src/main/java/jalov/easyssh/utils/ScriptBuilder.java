@@ -5,6 +5,13 @@ package jalov.easyssh.utils;
  */
 
 public class ScriptBuilder {
+    static final String IF = "if [ ! -f ";
+    static final String FI = "fi;";
+    static final String IF_CONDITION_END = " ];";
+    static final String STDERR_TO_STDOUT = " 2>&1";
+    public static final String KEYGEN_PATH = "/system/bin/ssh-keygen";
+    public static final String PUB_KEY_SUFFIX = ".pub";
+
     private StringBuilder script;
 
     public ScriptBuilder() {
@@ -16,14 +23,14 @@ public class ScriptBuilder {
     }
 
     public ScriptBuilder readFile(String filePath) {
-        script.append(Scripts.READ_FILE)
+        script.append("cat ")
                 .append(filePath)
                 .append(";");
         return this;
     }
 
     public ScriptBuilder findProcess(String processName) {
-        script.append(Scripts.FIND_PROCESS)
+        script.append("ps | grep ")
                 .append(processName)
                 .append(";");
         return this;
@@ -36,29 +43,50 @@ public class ScriptBuilder {
         return this;
     }
 
-    public ScriptBuilder createDsaHostkeyIfNotExist() {
-        script.append(Scripts.CREATE_DSA_HOSTKEY_IF_NOT_EXIST);
+    public ScriptBuilder createDsaHostkeyIfNotExist(String path) {
+        script.append(IF).append(path).append(IF_CONDITION_END)
+                .append("then ").append(KEYGEN_PATH).append(" -t dsa -f ").append(path).append(" -N \"\";")
+                .append("chmod 600 ").append(path).append(";")
+                .append("chmod 644 ").append(path).append(PUB_KEY_SUFFIX).append(";")
+                .append(FI);
         return this;
     }
 
-    public ScriptBuilder createRsaHostkeyIfNotExist() {
-        script.append(Scripts.CREATE_RSA_HOSTKEY_IF_NOT_EXIST);
+    public ScriptBuilder createRsaHostkeyIfNotExist(String path) {
+        script.append(IF).append(path).append(IF_CONDITION_END)
+                .append("then ").append(KEYGEN_PATH).append(" -t rsa -f ").append(path).append(" -N \"\";")
+                .append("chmod 600 ").append(path).append(";")
+                .append("chmod 644 ").append(path).append(PUB_KEY_SUFFIX).append(";")
+                .append(FI);
         return this;
     }
 
-    public ScriptBuilder createSshdConfigIfNotExist() {
-        script.append(Scripts.CREATE_SSHD_CONFIG_IF_NOT_EXIST);
+    public ScriptBuilder createSshdConfigIfNotExist(String path) {
+        script.append(IF).append(path).append(IF_CONDITION_END)
+                .append("then echo \"\" > ").append(path).append(";")
+                .append("chmod 644 ").append(path).append(";")
+                .append(FI);
         return this;
     }
 
-    public ScriptBuilder createAuthorizedKeysFileIfNotExist() {
-        script.append(Scripts.CREATE_AUTHORIZED_KEYS_FILE_IF_NOT_EXIST);
+    public ScriptBuilder createAuthorizedKeysFileIfNotExist(String path) {
+        script.append(IF).append(path).append(IF_CONDITION_END)
+                .append("then echo \"\" > ").append(path).append(";")
+                .append("chmod 600 ").append(path).append(";")
+                .append(FI);
         return this;
     }
 
-    public ScriptBuilder runSshd(String sshdOptions) {
-        script.append(Scripts.RUN_SSHD)
+    public ScriptBuilder runSshd(String sshdPath, String configPath, String keysPath,
+                                 String dsaHostkeyPath, String rsaHostkeyPath, String sshdOptions) {
+        script.append(sshdPath)
+                .append(" -f ").append(configPath)
+                .append(" -h ").append(dsaHostkeyPath)
+                .append(" -h ").append(rsaHostkeyPath)
+                .append(" -o AuthorizedKeysFile=").append(keysPath)
+                .append(" -o PasswordAuthentication=no")
                 .append(sshdOptions)
+                .append(STDERR_TO_STDOUT)
                 .append(";");
         return this;
     }

@@ -32,7 +32,7 @@ public class AuthorizedKeysManager {
 
     private List<AuthorizedKey> loadAuthorizedKeys() {
         String script = new ScriptBuilder()
-                .createAuthorizedKeysFileIfNotExist()
+                .createAuthorizedKeysFileIfNotExist(SshdConfig.AUTHORIZED_KEYS_PATH)
                 .readFile(SshdConfig.AUTHORIZED_KEYS_PATH)
                 .build();
 
@@ -67,7 +67,7 @@ public class AuthorizedKeysManager {
         saveAuthorizedKeys();
     }
 
-    private List<AuthorizedKey> readAuthorizedKeysFromInputStream(InputStream inputStream) {
+    public List<AuthorizedKey> readAuthorizedKeysFromInputStream(InputStream inputStream) {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
             return reader.lines().map(l -> l.split("\\s+"))
                     .filter(a -> a.length >= 3)

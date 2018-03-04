@@ -37,12 +37,13 @@ public class SshdServer extends SshServer {
     public void start() {
         if (!running) {
             String startScript = new ScriptBuilder()
-                    .createDsaHostkeyIfNotExist()
-                    .createRsaHostkeyIfNotExist()
-                    .createSshdConfigIfNotExist()
-                    .createAuthorizedKeysFileIfNotExist()
-                    .runSshd(sshdConfig.getSshdOptions())
-                    .findProcess(SSHD_APP_NAME)
+                    .createDsaHostkeyIfNotExist(SshdConfig.DSA_HOSTKEY_PATH)
+                    .createRsaHostkeyIfNotExist(SshdConfig.RSA_HOSTKEY_PATH)
+                    .createSshdConfigIfNotExist(SshdConfig.SSHD_CONFIG_PATH)
+                    .createAuthorizedKeysFileIfNotExist(SshdConfig.AUTHORIZED_KEYS_PATH)
+                    .runSshd(SSHD_APP_NAME, SshdConfig.SSHD_CONFIG_PATH,
+                            SshdConfig.AUTHORIZED_KEYS_PATH, SshdConfig.DSA_HOSTKEY_PATH,
+                            SshdConfig.RSA_HOSTKEY_PATH, sshdConfig.getSshdOptions())
                     .build();
 
             Optional<InputStream> inputStream = RootManager.runAsync(startScript);
