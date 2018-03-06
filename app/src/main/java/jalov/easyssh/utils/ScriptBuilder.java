@@ -11,6 +11,7 @@ public class ScriptBuilder {
     static final String STDERR_TO_STDOUT = " 2>&1";
     public static final String KEYGEN_PATH = "/system/bin/ssh-keygen";
     public static final String PUB_KEY_SUFFIX = ".pub";
+    public static final String SERVER_START_MARKER = "run-ssh-server";
 
     private StringBuilder script;
 
@@ -79,7 +80,8 @@ public class ScriptBuilder {
 
     public ScriptBuilder runSshd(String sshdPath, String configPath, String keysPath,
                                  String dsaHostkeyPath, String rsaHostkeyPath, String sshdOptions) {
-        script.append(sshdPath)
+        script.append("echo ").append(SERVER_START_MARKER).append(";")
+                .append(sshdPath)
                 .append(" -f ").append(configPath)
                 .append(" -h ").append(dsaHostkeyPath)
                 .append(" -h ").append(rsaHostkeyPath)

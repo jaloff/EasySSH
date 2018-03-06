@@ -37,29 +37,38 @@ public class Logger {
 
     public boolean registerSshServerInputStream(InputStream inputStream) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        String firstLine = null;
+        String line = null;
 
         try {
-            firstLine = reader.readLine();
+            boolean marker = false;
+            while ((line = reader.readLine()) != null && !marker) {
+                if(line.compareTo(ScriptBuilder.SERVER_START_MARKER) == 0) {
+                    marker = true;
+                    line = reader.readLine();
+                } else {
+                    log(line);
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        if (firstLine == null) {
+
+        if (line == null) {
             return false;
         }
 
-        log(firstLine);
+        log(line);
 
-        if (!firstLine.startsWith(SERVER_FIRST_MESSAGE)) {
+        if (!line.startsWith(SERVER_FIRST_MESSAGE)) {
             return false;
         }
 
         new Thread(() -> {
             try {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    log(line);
+                String threadLine;
+                while ((threadLine = reader.readLine()) != null) {
+                    log(threadLine);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
