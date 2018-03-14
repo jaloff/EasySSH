@@ -1,16 +1,16 @@
 # EasySSH
-LineageOS comes with all tools needed to run SSH server on android device, but is missing configuration and simple way to manage it. This application helps to resolve this problems.
+This application helps configure and run SSH server on android device. It is dedicated for android ROMs that have embedded OpenSSH, i.e. LineageOS.
 
 ## Features
-* Generate missing configuration
-* Simple server start/stop
-* Option to run server on app start and system boot
+* Configuration management
 * Authorized keys management
+* Option to run server on app start and system boot
+* Notification about running server
 * Display server logs
-* Show notification if server is running
+* Dark theme
 
 ## Requirements
 * Rooted device
-* LineageOS 14.1
+* Android ROM with OpenSSH
 
-Keys imported to application have to be in OpenSSH format.
+Keys imported into application have to be in OpenSSH format.
